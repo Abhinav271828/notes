@@ -1,0 +1,2635 @@
+1. The λ-Calculus
+A. Introduction
+    Informally, system for representing functions
+    Formally:
+    D1.1 (λ-terms) Set of λ-terms
+        (i) all variables + atomic constants = atoms
+        (ii) (λ-term)(λ-term) = application
+        (iii) λx.(λ-term) = abstraction
+    
+    MNPQ = (((MN)P)Q)
+
+B. Term-structure and substitution
+    D1.6 The length of M = lgh(M) = number of occurrences of atoms
+    D1.7 P occurs in Q is defined inductively
+    D1.9 (Scope) In λx.M, M is the scope of λx
+    D1.11 (Free and bound vars) x is bound if in the scope of λx 
+    Closed term = term w/o FVs
+
+    D1.12 (Substitution) [N/x]M is the result of substituting N for every free occ. of x in M
+
+    D1.17 (Change of bound vars, congruence) If P can be changed to Q by a finite series of changes of bound variables, P is congruent to Q [α-conversion].
+    Congruence is an equiv. reln.
+
+C. β-reduction
+    D1.24 (β-contracting, β-reducing) (λx.M)N is a β-redex and [N/x]M is its contractum. Replacing = β-contraction
+    If P can be changed to Q by a finite series of β-contractions, P β-reduces to Q.
+    D1.26 If Q contains no β-redexes, it's in β-nf.
+        Ω = (λx.xx)(λx.xx) has no normal form, but is minimal.
+
+    E.128 (i) vyy (ii) vu (iii) (x(yz))vx
+
+    T1.32 (Church-Rosser Theorem for β-reduction) β-reduction is confluent
+    => β-nfs are unique upto α-conversion
+
+    L1.33 β-nf is the smallest class containing all atoms and closed under application & abstraction.
+   
+D. β-equality
+    D1.37 P is β-equal or β-convertible to Q iff Q can be obtained from P by a finite series of β-contractions, reversed β-contractions and α-conversions.
+    C1.41.4 A term is β-equal to ≤ 1 β-nf upto α-conversion
+
+    E1.42 forall M, N: M = (λxy.x)MN = (λxy.y)MN = N
+          forall M, N: M = (λxy.xy)(KM)(KN) = (KN)(KM) = N
+                           (λx.x)(KM)(KN) = (KM)(KN) M
+
+2. Combinatory Logic
+A. Introduction to CL
+    Same as λ, without bound vars
+    e.g. (C(f))(x,y) = f(y,x) : commutative law
+    Formally:
+    D2.1 CL-terms = variables + atomic constants (incl. I K S)
+                 OR (CL-term)(CL-term)
+    
+    e.g. (S(KS)K)
+    D2.3 Length of X = lgh(X) = no. of occurrences of atoms in X
+    D2.4 X occurs in Y / X is a subterm of Y
+    D2.6 (Substitution) [U/x]Y
+    
+    E2.8 (b) x_i \notin U_j \forall j > i
+
+B. Weak Reduction
+    D2.9 (Weak Reduction) IX, KXY, SXYZ are weak redexes. Contracting: IX -> X, KXY -> X, SXYZ -> XZ(YZ)
+    If V is obtained from U by a finite series of weak reductions, U weakly reduces to V.
+    D2.10 A weak nf is a term that contains no weak redexes.
+
+    B = S(KS)K => BXYZ = X(YZ)
+    C = S(BBS)(KK)
+    E2.13 (i) SIKx = Ix(Kx) = x(Kx)
+          (ii) SSKxy = Sx(Kx)y = xy(Kxy) = xyx
+          (iii) S(SK)xy = (SK)y(xy) = Kxy(y(xy)) = x(y(xy))
+          (iv) S(KS)Sxyz = (KSx)(Sx)yz = S(Sx)yz = (Sx)z(yz) = x(yz)(z(yz))
+          (v) SBBIxy = BI(BI)xy = BIxy = xy
+
+    T2.15 (Church-Rosser Theorem for w-reduction) w-reduction is confluent.
+
+    E2.16 SKKx = Kx(Kx) = x
+
+C. Abstraction in CL
+    [x].M is a CL-term for all x & M, such that [x].M w> [N/x]M
+    D2.18 (i) [x].M = KM     if x \notin FV(M)
+          (ii) [x].x = I
+          (iii) [x].Ux = U   if x \notin FV(U)
+          (iv) [x].UV = S([x].U)([x].V)
+
+    [x].xy = S([x].x)([x].y) = SI(Ky)
+    
+    NB: not actually part of formal language of CL terms
+    
+D. Weak Equality
+    D2.29 X and Y are weakly equal/convertible iff Y can be obtained from X by a finite series of weak contractions / reversed weak contractions.
+    
+    BWBIx = (BI)xx = I(Ix)x = Ixx = xx
+    SIIx = Ix(Ix) = xx
+        
+    T2.32 (Church-Rosser Theorem for w-equality) w-equality is confluent.
+    
+    Mostly, w= is the same as β=. BUT this doesn't hold:
+        X w= Y => [x].X w= [x].Y
+    while this does:
+        X β= Υ => λx.X  β= λx.Y
+
+3. The Power of λ and Combinators
+A. Introduction
+    D3.2 A combinator is (in λ) a closed pure term or (in CL) a term whose only atoms are I K S.
+
+B. The Fixed-Point Theorem
+    T3.3 (FPT) In both, there is Y: Yx βw> x(Yx)
+    P. Y = UU, U = λux.x(uux)
+       Then Yx = (λux.x(uux))Ux = x(UUx) = x(Yx)
+    => xy1y2...yn = Z can always be solved for x [Y(λxy1y2...yn.Z)]
+
+C. Boehm's Theorem
+    D3.7 In λ, λx.Mx is an η-redex and η-contracts to M. A term containing no η-redexes and no β-redexes is in βη-nf.
+    D3.8 In CL, strong-nf is defined as
+                all stoms other than I K S
+                aX1X2...Xn if a, Xi are in it
+                [x].X if X is in it
+    
+    T3.11 If M and N are combinators (either βη or strong-nf), \exists n ≥ 0 and combinators Li such that
+        ML1...Lnxy βw> x and
+        NL1...Lnxy βw> y
+    => if M ≠ N and we add M = N as an axiom, everything becomes equal
+
+D. The Quasi-Leftmost-Reduction Theorem
+    D3.13 (Contractions) X R> Y
+    D3.15 (Reductions) A finite or infinite series of contractions separated by α-conversions
+    D3.16 A reduction ρ has maximal length iff either ρ is infinite or its terminus has no redexes
+
+    D3.18 An occurrence of a redex in a term is maximal if it isn't contained in any other; it is leftmost maximal iff it is the leftmost of the maximal redex-occurrences; contracting this repeatedly is a leftmost/normal reduction.
+
+    D3.21 A quasi-leftmost reduction is a reduction with maximal length such that for all Xi ≠ terminal, \exists j ≥ i : Rj is leftmost maximal.
+
+    T3.22 (QLRT) If X has a normal form, all quasi-leftmost reductions of X end there.
+
+E. History and Interpretation
+
+4. Representing the Computable Functions
+A. Introduction
+    n-arg fn is a fn : N^n -> N
+    0-arg fn is n \in N
+    partial fn : S \subseteq N^n -> N
+    X^n Y = X(X(X...(XY)...))
+    D4.2 (The Church Numerals) n_Ch is defined in λ as
+                n_Ch = λxy.(x^n)y
+    and in CL as
+                n_Ch = ((SB)^n)KI
+
+    D4.5 (Representability) if φ is a partial function, X represents it iff
+        φ(m1,...,mn) = p => Xm1_Ch...mn_Ch βw= p_Ch and
+        φ(m1,....mn) dne => Xm1_Ch...mn_Ch has no nf
+
+    σ = λuxy.x(uxy)
+    σ_Ch = [u,x,y].x(uxy) = SB
+
+    Every partial recursive fn is representable in λ and CL
+    Converse is also true; comes from recursively axiomatised definitions of β= and w=
+
+B. Primitive Recursive Functions
+    D4.8 (PRF) (i) σ
+               (ii) 0
+               (iii) projection Π^n_k: Π^n_k (m1,...,mn) = mk
+               (iv) if n, p ≥ 1 and ψ, χ1,...,χp are PRF,
+                        φ(m1,...,mn) = ψ(χ1(m1,...,mn),...,χp(m1,...,mn))
+               (v) if n ≥ 0 and ψ, χ are PRF,
+                        φ(0,m1,...,mn) = ψ(m1,...,mn)
+                        φ(k+1,m1,...,mn) = χ(k,φ(k,m1,...,mn),m1,...,mn)
+    
+    e.g. pred fn π(0) = 0
+                 π(k+1) = k
+         PRF because π(0) = 0
+                     π(k+1) = Π^2_1(k,π(k))
+
+    T4.11 (Representation of Primitive Recursion) Every PRF can be represented by a combinator
+    P. (i) σ = λuxy.x(uxy)
+       (ii) 0 = λxy.y
+       (iii) Π^n_k = λx1...xn.xk
+       (iv) φ = λx1...xn.(ψ(χ1x1...xn)...(χpx1...xn))
+       (v) φ = λux1...xn.(R(ψx1...xn)(λuv.χuvx1...xn)u)
+                where RXY0 = X
+                      RXY(k+1) = Yk(RXYk)
+        
+    works because
+        φ0x1...xn = ψx1...xn
+        φ(k+1)x1...xn = R(ψx1...xn)(λuv.χuvx1...xn)(k+1)
+                      = (λuv.χuvx1...xn)(k)(R(ψx1...xn)(λuv.χuvx1...xn)k)
+                      = (λuv.χuvx1...xn)(k)(φkx1...xn)
+                      = χk(φkx1...xn)x1...xn
+
+    R should have those properties because:
+    φ(u,m1,...,n) = λum1...mn.(R(ψm1...mn)(λuv.χuvm1...mn)(u))
+    φ(0,m1...mn) = R(ψm1...mn)(λuv.χuvm1...mn)0 = ψm1...mn
+    φ(k+1,m1...mn) = R(ψm1...mn)(λuv.χuvm1...mn)(k+1) = (λuv.χuvm1...mn)(k)(φ(k,m1...mn))
+                                                  = (λuv.χuvm1...mn)(k)(R(ψm1...mn)(λuv.χuvm1...mn)(k))
+
+    Therefore,
+    RXY0 = X
+    RXY(k+1) = Yk(RXYk)
+
+or
+
+    φ = λux1...xn.Pu(ψx1...xn)(λuvx1...xn.χuvx1...xn)
+
+    φ0x1...xn = P0(ψx1...xn)(λuvx1...xn.χuvx1...xn) = ψx1...xn
+    φ(k+1)x1...xn = P(k+1)(ψx1...xn)(λuvx1...xn.χuvx1...xn)
+              = (λuvx1...xn.χuvx1...xn)(k)(φkx1...xn)
+
+    P0XY = X
+    P(k+1)XY = Yk(PkXY)
+
+    Constructing R:
+    Consider φ(0) = m, φ(k+1) = χ(k,φ(k)).
+    Can be calculated by writing <0,m> and iterating Next k times, i.e.,
+        Next<k,x> = <k+1,χ(k,x)>
+    and taking second element
+    (i) define pairing combinator D:
+            D = λxyz.z(Ky)x
+        Then DXY0 = X; DXY(k) = Y
+    (ii) define analogue of Next:
+            Q = λyp.D(σ(p0))(y(p0)(p1))
+        Then (QY)(DnX) = D(n+1)(YnX)
+    (iii) define R:
+            R = λxyu.u(Qy)(D0x)1
+
+    To verify,
+        RXY0 = 0(QY)(D0X)1 = (D0X)1 = X
+        RXY(k+1) = (k+1)(QY)(D0X)1 = QY(k(QY)(D0X))1 = QY(DkX_k)1 = D(k+1)(YkX_k)1 = YkX_k = Yk(RXYk)
+
+    Eg. π(0) = 0; π(k+1) = k
+        π = R0K
+
+    For the pairing combinator, two projection combinators
+        D1 = λd.d0
+        D2 = λd.d1
+    Also, D behaves like a conditional operator; DXYn : If n = 0, then X, else Y
+        
+    Recursion using Fixpoints: If π represents predecessor,
+        Rxyz = [If z = 0, then x; else y(πz)(Rxy(πz))]
+             = Dx(y(πz)(Rxy(πz)))z
+
+    which has the solution R_fix = Y(λuxyz.Dx(y(πz)(uxy(πz)))z)
+    but this has no normal form.
+
+    E4.16
+    (a) φ = λk.R2Yk
+                Y = λuv.(3+v)
+                .: φ(0) = R2Y0 = 2
+                   φ(k+1) = R2Y(k+1) = Yk(R2Yk) = 3 + (R2Yk)
+    (b) + = λmn.Rm(λx.σ)n = λm.Rm(λx.σ)
+                +(m,0) = Rm(λx.σ)0 = m
+                +(m,n+1) = Rm(λx.σ)(n+1) = (λx.σ)n(Rm(λx.σ)n) = σ(Rm(λx.σ)n)
+        • = λmn.R0(λu.+m)n = λm.R0(λu.+m)
+                •(m,0) = R0(λu.+m)0 = 0
+                •(m,n+1) = R0(λu.+m)(n+1) = (λu.+m)n(R0(λu.+m)n) = m + R0(λu.+m)n
+        ^ = λmn.R1(λu.•m)n = λm.R1(λu.•m)n
+                ^(m,0) = R1(λu.•m)0 = 1
+                ^(m,n+1) = R1(λu.•m)(n+1) = (λu.•m)n(R1(λu.•m)n) = m • R1(λu.•m)n
+     (c) - = λmn.Rm(λx.π)n = λm.Rm(λx.π)
+                -(m,0) = Rm(λx.π)0 = m
+                -(m,n+1) = Rm(λx.π)(n+1) = (λx.π)n(Rm(λx.π)n) = π(Rm(λx.π)n)
+     (d) + = λmn.mσn = λmn.nσm
+         • = λmn.m(+n)0 = λmn.n(+m)0 = λmn.m(nσ)0
+         ^ = λmn.(mn)σ0
+     E4.17
+     (a) φ(m) = m^2 - 2m + 3; φ(m+1) - φ(m) = (m+1)^2 - m^2 - 2 = 2m-1
+         φ = λm.R3(λx.(2x-1+))m
+                φ(0) = R3(λx.(2x-1+))0 = 3
+                φ(m+1) = R3(λx.(2x-1+))(m+1) = (λx.2x-1+)m(R3(λx.(2x-1+))m) = 2m - 1 + R3(λx.(2x-1+))m
+     (b) φ(m) = m!
+         φ = λm.R1(λx.(σx)•)m = R1•
+                φ(0) = R1(λx.(σx)•)0 = 1
+                φ(m+1) = R1(λx.(σx)•)(m+1) = (λx.(σx)•)m(R1•m) = (σm) • (R1•m)
+
+C. Recursive Functions
+    D4.18 (RTF) A total function φ from N^n to N is recursive if there exist PRFs ψ and χ such that φ(m1,...,mn) = ψ(μk[χ(m1,...,mn,k) = 0]).
+    NB: there exists such a k.
+
+    T4.20 (Representation) Every RTF can be represented by a combinator.
+    P. ψ and χ can. We need a function to do μk.
+        Consider H s.t.
+                Hx1...xny = (if χx1...xny = 0 then y else Hx1...xn(σy))
+            and φ = λx1...xn.ψ(Ηx1...xn0)
+        so H = Y(λux1...xny.Dy(ux1...xn(σy))(χx1...xny))
+        but no normal form.
+        So we do
+                T = λx.D0(λuv.u(x(σv))u(σv))
+                P = λxy.Tx(xy)(Tx)y
+        which means PXY =βw Y      if XY = 0
+                    and =βw PX(σY) o/w.
+
+side
+P = λxy.
+        D0(λuv.u(x(σv))u(σv))
+        (xy)
+        D0(λuv.u(x(σv))u(σv))
+        y
+
+So if (xy) = 0, 0()y = y
+   else,        same spaz on σy
+        
+        Now H = λx1...xny.P(χx1...xn)y
+        and φ as before.
+
+    D4.21 (PaRF) Analogous, for partial functions.
+
+    e.g. m1 - m2 = μk[((m2 + k) -c m1) = 0] [-c: cut-off subtraction]
+
+    T4.23 (Representation) Every PaRF can be represented by a combinator.
+    P. We need to construct a φ that has no normal form if there is no such k.
+        Let the φ above be F: F = λx1...xn.ψ(Hx1...xn0)
+        and let φ = λx1...xn.P(χx1...xn)0I(Fx1...xn)
+
+        If there is no k, there is an infinite QLR for this φ.
+
+    T4.24 (Representation by normal forms) Every PaRF can be represented by a combinator in normal form.
+    P. In CL, is easy
+       In λ
+        (i) M, N in nf => [(zN)/y]M in nf and Mz has nf
+        (ii) 5 cases as in T4.11; 1-3 are easy
+             4: let φ = λx1...xn.(x1IψN1...Np)
+                        where Ni = χix1...xn
+             5: D, Q, R all have nf
+        (iii) use H = λx1...xny.x1IP(χx1...xn)y
+              and φ = λx1...xn.x1Iψ(Hx1...xn0)
+        (iv) for PaRFs, φ = λx1...xn.x1IP(χx1...xn)0I(Fx1...xn)
+
+D. Abstract Numerals and Z
+    We can add atomic constants 0' and σ'; define n = (σ')^n0'
+    -> abstract numerals.
+    But R, π can't be constructed.
+    We can add another atom Z s.t. Zn' = n_Ch [iteration operator]
+
+    New reducibility relation, which is also confluent.
+
+    We can also build R:
+        Q = λyv.D(σ'(v0_Ch))(y(v0_Ch)(v1_Ch))
+        R = λxyu.Zu(Qy)(D0'x)1_Ch
+
+    so that RXY0' = Y
+        and RXY(k+1)' = Yk'(RXYk')
+
+    We can also do
+        T = λx.D0_Ch(λuv.u(x(σ'v))u(σ'v))
+        P = λxy.Tx(xy)(Tx)y
+
+    so that PXY = Y       if XY = 0'
+        and PXY = PX(σ'Y) o/w.
+
+    D4.26 (Arithmetical Extension) λβZ or CLwZ is obtained by adding the three new atoms σ', 0' and Z; and the contraction.
+
+5. The Undecidability Theorem
+
+    =β is recursively undecidable
+    Assume: every term X has a number n = gd(X)
+            there is a RTF τ s.t. τ(X,Y) = gd((XY)) for all terms X, Y
+                           ν      ν(n)   = gd(n_Ch)
+
+    D5.3 For all X, (gd(X))_Ch = [X].
+    NB: X term => gd(X) number => [X] term
+    
+    D5.4 A pair of sets A, B of natural numbers is recursively separable iff \exists a RTF φ w/ range {0,1} s.t.
+                n \in A => φ(n) = 0
+              & n \in B => φ(n) = 1.
+
+    A pair of sets of terms is recursively separable if the sets of their Goedel numbers are.
+    A set is recursive or decidable iff A, A' are recursively separable.
+
+    Informallu, A & B are RS iff they have no intersection and there is an algo to decide if something is in A or B.
+
+    D5.5 A set A is closed under conversion/equality iff for all X, Y
+                X \in A & Y =βw X => Y \in A
+
+    T5.6 (Scott-Curry Undecidability Theorem) No pair of non-empty sets closed under conversion is RS.
+    P. Let A, B be such sets of terms and φ be the separator.
+       So X \in A => φ(gd(X)) = 0
+          X \in B => φ(gd(X)) = 1
+       Let F represent φ, so X \in A => F[X] = 0_Ch
+                         and X \in B => F[X] = 1_Ch.
+       
+       Also, let T represent τ
+             and N           ν, so
+                T[Χ][Y] = [(XY)]
+                Nn_Ch   = [n_Ch]
+
+       Let A \in A and B \in B; construct J s.t. F[J] => J = B
+                                             and F[J] => J = A.
+       
+       So we need J = DBA(F[J])
+       which we can make as
+                H = λy.DBA(F(Ty(Ny)))
+                J = H[H]
+       because then J = DBA(F(T[H](N[H])))
+                      = DBA(F(T[H][[H]]))
+                      = DBA(F([H[H]]))
+                      = DBA(F[J]), QED.
+
+    C5.6.1 If A is closed under conversion and A, A' are non-empty, then A is undecidable.
+    C5.6.2 The set of all terms which have normal forms is not decidable.
+    C5.6.3 =β and =w are not decidable.
+
+    R5.7 (Entscheidungsproblem) Church's proof of undecidability of pure classical first-order logic:
+        Goedel numbers: λ -> Nat
+        Let z be a var,
+            f be a func, then let 0 -> z
+                                  x -> f(rep(x-1))
+                     .: Nat -> PCFoL
+        Therefore we have λ -> PCFoL
+        But λ is not decidable, so PCFoL is not.
+
+    E5.9(b) H = λy.F(Ty(Ny))
+            Xf = H[H]
+               = F(T[H](N[H]))
+               = F(T[H][[H]])
+               = F([H[H]])
+               = F[Xf]
+
+6. The Formal Theories λβ and CLw
+A. The Definitions of the Theories
+    Hilbert-style theories, not Gentzen-style
+    Theory T consist of 3 sets: formulas, axioms, rules
+    Given a set of formulas Γ, a deduction of B from Γ is a tree starting w axioms/members of Γ and reaching B through rules
+    If a non-axiom is on top, "assumption"
+    If such a derivation exists, T, Γ |- B; if Γ = φ, deduction is "proof" and B is a provable formula or "theorem" in B
+    
+    D6.2 (λβ, Formal Theory of β-equality)
+        Axiom-schemes: (α) λx.M = λy.[y/x]M if y \notin FV(M)
+                       (β) (λx.M)N = [N/x]M
+                       (ρ) M = M
+        Rules: (μ)  M = M'
+                   NM = NM'
+               (v)  M = M'
+                   MN = M'N
+               (ξ)    M = M'
+                   λx.M = λx.M'
+               (τ) M = N N = P
+                      M = P
+               (σ) M = N
+                   N = M
+    D6.3 (λβ, Formal Theory of β-reduction)
+        Same axiom-schemes and rules [with >β instead of =] except (σ)
+    
+    L6.4 The above works.
+
+    D6.5 (CLw, Formal Theory of Weak Equality)
+        Axiom-schemes: (I) IX = X
+                       (K) KXY = X
+                       (S) SXYZ = XZ(YZ)
+                       (ρ) X = X
+        Rules: (μ)  X = X'
+                   ZX = ZX'
+               (v)  X = X'
+                   XZ = X'Z
+               (τ) X = Y Y = Z
+                      X = Z
+               (σ) X = Y
+                   Y = X
+
+    D6.6 (CLw, Formal Theory of Weak Reduction)
+        Same axiom-schemes and rules [with >β instead of =] except (σ)
+        
+    L6.7 The above works.
+
+    R6.8 Both theories are consistent (not all formulas are provable).
+
+B. First-Order Theories
+    First-order language: Terms, atomic formulas, composite formulas
+    First-order theories: Special kind of Hilbert-style formal theory; formulas = formulas of an FOL
+                                                                       axioms = proper (specific to it) + logical (normal predicate logic)
+                                                                       rules = rules of PL
+
+    D6.11 (The First-Order Theory CLw+)
+        Atomic formulas: X = Y
+        Composite formulas: Connectives & quantifiers
+        Rules of inference and logical axioms: classical first-order logic
+        Proper axioms: (a) (forall x, y) (Kxy = x)
+                       (b) (forall x, y, z) (Sxyz = xz(yz))
+                       (c) !(S = K)
+    
+    L6.12 CLw+ has the same set of provable formulas as CLw.
+
+    CLw+ is a "conservative extension" of CLw
+
+C. Equivalence of Theories
+    If F is the set of formulas, rules R(φ) are determined by functions φ from a subset of F^n to F, n ≥ 1
+
+    D6.13 (Derivable and Admissible Rules) Let R be a rule determined by a function φ.
+        R is derivable in T iff, in every instance of it, the conclusion is deducible from the premises.
+        R is admissible in T iff adding R to T does not increase the set of its theorems.
+        R is correct in T iff for each instance of it, the conclusion is provable if the premises are provable.
+        A single formula C is derivable and admissible in T iff T |- C
+
+    L6.14 If T, R, φ are as above
+        (a) R is admissible in T iff R is correct in T.
+        (b) If R is derivable in T, R is admissible in T.
+        (c) If R is derivable in T, R is derivable in all extensions of T.
+
+    D6.15 If T and T' have the same set of formulas,
+        T and T' are theorem-equivalent iff every rule & axiom of T is admissible in T' and vice versa.
+                     rule-equivalent                                   derivable
+
+    L6.16 T and T' are theorem-equivalent iff they have the same set of theorems.
+
+    D6.17 The equality relation determined by T is defined as
+        X =T Y iff T |- (X = Y)
+        
+    D6.18 if T and T' are theorem-equivalent, they determine the same equality relation.
+
+7. Extensionality in λ-Calculus
+A. Extensional Equality
+    Proposed rules: (ζ) Mx = Nx         if x \notin FV(MN)
+                         M = N
+                    (ext)  MP = NP forall terms P
+                                   M = N     
+                    (η) λx.Mx = M       if x \notin FV(M)
+    But adding (ext) is theorem-equivt to adding (ζ), so ignore
+    
+    D7.2 Two new equality theories, λβζ and λβη
+
+    R7.3 Rule (ω) MQ = NQ forall closed terms Q
+                              M = N
+    is stronger than (ext) and (ζ)
+
+    T7.4 λβζ and λβη are rule- and theorem-equivalent.
+    P. (ζ) derivable in λβη:
+        Mx = Nx => λx.Mx = λx.Nx => M = N
+       (η) derivable in λβζ:
+        (λx.Mx)x = Mx is provable by (β) => (λx.Mx) = M
+
+    D7.5 (Extensional (βη) Equality in λ)
+        M =ext N <=> λβζ |- M = N
+        M =_βη  N <=> λβη |- M = N
+    
+B. βη-reduction in λ-Calculus
+    D7.7 (η-reduction) An η-redex is a term of the form
+                λx.Mx
+    and its contractum is M.
+
+    D7.8 (βη-reduction) Analogous to β-reduction.
+
+    D7.9 (βη-normal forms) Analogous to β-normal forms.
+
+    D7.10 (The Formal Theory λβη of βη-reduction) Formed by adding the axiom-scheme
+            λx.Mx >η M if x \notin FV(M)
+
+    L7.11 For all P, Q: P >βη Q <=> λβη |- P > Q
+
+    L7.12 For all P, Q
+    (a) P >βη Q => FV(P) \superseteq FV(Q)
+    (b) P >βη Q => [P/x]M >βη [Q/x]M
+    (c) P >βη Q => [N/x]P >βη [N/x]M
+
+    L7.13 (Church-Rosser Theorem for βη) If P >βη M and P >βη N, \exists T such that M >βη T and N >βη T.
+    C7.13.1 If P has a βη-normal form it is unique modulo α-conversion.
+    C7.13.2 P has a βη-normal form iff it has a β-normal form.
+
+    T7.14 (η-postponement) If M >βη N, \exists P such that
+        M >β P >η Ν
+
+    T7.16 For all terms P and Q, P =ext Q iff Q can be obtained from P by a finite series of βη-contractions, reversed βη-contractions and α-conversions.
+    C7.16.1 (Church Rosser Theorem for =ext) If P =ext Q, \exists T such that P >βη T and Q >βη T.
+    C7.16.2 (Consistency of =βη) There exist λ-terms M and N such that M ≠βη N.
+    C7.16.3 (Uniqueness of nf) A λ-term is extensionally equal to at most nf, modulo α-conversions. 
+
+8. Extensionality in Combinatory Logic
+A. Extensional Equality
+    (ζ) Xx = Yx         if x \notin FV(XY)
+         X = Y
+    (ξ)     X = Y
+        [x].X = [x].Y
+    (η) [x].Ux = U      if x \notin FV(U)
+
+    D8.2 CLwζ and CLwξ by adding the corresponding rules to CLw.
+
+    R8.4 (ext) XZ = YZ forall terms Z
+                   X = Y
+    gives the same set of equations as (ζ).
+
+    D8.5 (Extensional Equality in CL) The relation =ext is defined as
+                X =ext Y <=> CLζ |- X = Y.
+    
+    e.g. SK =ext KI
+         S(KX)(KY) =ext K(XY)
+         S(KX)I = X
+
+    R8.7 (The roles of (ξ) and (η))
+        (ξ) : extensionality holds for abstractions
+        (η) : all terms are equal to abstractions
+    so both are needed for extensionality for all terms.
+
+    T8.8 CLξ determines =ext just like CLζ.
+    P. (ζ) in CLξ:
+                Xx = Yx => [x].Xx = [x].Yx => X = Y
+       (ξ) in CLζ:
+                X = Y => ([x].X)x = ([x].Y)x => [x].X = [x].Y
+
+B. Axioms for Extensionality in CL
+    Adding (ζ) is the same as adding a finite set of axioms: Curry
+
+    D8.10 (Extensionality Axioms) CLext_ax is defined by adding:
+        E-ax 1: S(S(KS)(S(KK)(S(KS)K)))(KK) = S(KK)
+        E-ax 2: S(S(KS)K)(KI) = I
+        E-ax 3: S(KI) = I
+        E-ax 4: S(KS)(S(KK)) = K
+        E-ax 5: S(K(S(KS)))(S(KS)(S(KS)))
+                = S(S(KS)(S(KK)(S(KS)(S(K(S(KS)))S))))(KS)
+
+    N8.11 Above is the same as
+        E-ax 1: [x,y,v].(Kxy)(Kyv) = [x,y,v].xy
+             or [x,y].S(Kx)(Ky) = [x,y].K(xy)
+        E-ax 2: [x,v].(Kxv)(Iv) = [x,v].xv
+             or [x].S(Kx)I = [x].x
+        E-ax 3: [x,v].I(xv) = [x,v].xv
+             or [x].S(KI)x = [x].x
+        E-ax 4: [x,y,v].K(xv)(yv) = [x,y,v].xv
+             or [x,y].S(S(KK)x)y = [x,y].x
+        E-ax 5: [x,y,z,v].S(xv)(yv)(zv) = [x,y,z,v].xv(zv)(yv(zv))
+             or [x,y,z].S(S(S(KS)x)y)z = [x,y,z].S(Sxz)(Syz)
+    
+    We have to find axioms so that 
+        CLext_ax |- X = Y <=> CLext_ax |- [v].X = [v].Y
+    or
+        CLext_ax |- [v].IU = [v].U
+                    [v].KUV = [v].U
+                    [v].SUVW = [v].UW(VW)
+    
+    L8.13 For all X, Y, v:
+                CLext_ax |- [v].XY = S([v].X)([v].Y)
+    P. Already an identity unless v \notin FV(X), Y = v
+       This is the purpose of E-ax 1,2.
+       (a) [v].XY = K(XY)
+                  = ([x,y].K(xy))XY
+                  = ([x,y].S(Kx)(Ky))XY [E-ax 1]
+                  = S(KX)(KY)
+                  = S([v].X)([v].Y)
+       (c) [v].XY = X
+                  = S(KX)I
+                  = S([v].X)([v].v)
+    
+    T8.14 CLext_ax is theorem-equivalent to CLζ and CLξ; all determine =ext.
+    P. Each of E-ax 1-5 is provable in CLξ, so all equations in CLext_ax are the same as those of CLw.
+       Converse: RTP that if X = Y is provable in CLext_ax, then [v].X = [v].Y is also. Induction on number of steps n in proof of X = Y.
+       if n = 1, X = Y is an axiom.
+            (i) one of E-ax 1-5: no variables
+                [v].X = KX = KY = [v].Y
+            (ii) instance of ax-sch (K)
+                X = KUV, Y = U
+                [v].KUV = S(S(KK)([v].U))([v].V)
+                        = ([x,y].S(S(KK)x)y)([v].U)([v].V)
+                        = ([x,y].x)([v].U)([v].V)
+                        = [v].U
+            (iii) (I), (S), similar; (ρ) trivial.
+        if n ≥ 2, X = Y is the conclusion of (μ), (ν), (τ) or (σ)
+            (i) (μ) then X = ZU, Y = ZV
+                  \exists (n-1)-step proof for U = V
+                  so CLext_ax |- [v].U = [v].V
+                  [v].X = S([v].Z)([v].U)
+                        = S([v].Z)([v].V)
+                        = [v].Y
+            (ii) same for (ν); (τ) and (σ) easy
+
+C. Strong Reduction
+    D8.15 (Strong Reduction >-) Axiom-schemes and rules are same as in CLw, with = changed to >- and (σ) omitted, and
+                X >- Y
+            [x].X >- [x].Y
+    added.
+
+    e.g. SK >- KI
+         S(KX)(KY) >- K(XY)
+         S(KX)I >- X
+
+    L8.17 >- is transitive and reflexive, and
+        (a) X >- Y => FV(X) \superseteq FV(Y)
+        (b) X >- Y => [X/v]Z >- [Y/v]Z
+        (c) X >- Y => [U1/x1,...,Un/xn]X >- [U1/x1,...,Un/xn]Y
+        (d) >-'s equivc relation is =ext
+    
+    T8.18 (Church-Rosser Theorem for >-) The relation >- is confluent; if U >- X and U >- Y, \exists Z such that
+        X >- Z and Y >- Z.
+   
+    D8.19 X is called strongly irreducible iff for all Y,
+            X >- Y => Y = X
+
+    T8.20 The strongly irreducible terms are exactly strong nf (3.8).
+
+    D8.21 X has a strong nf X* iff X* is a strong nf and X >- X*.
+
+    L8.22
+        (a) A CL-term cannot have more than one strong nf.
+        (b) If X* is a strong nf and U =ext X* then U >- X*
+        (c) X* is the strong nf of X iff X* is a strong nf and X =ext X*.
+
+    R8.23 Why not I = SKK? because
+        I = SKK >- KIK >- K(KIK)K etc. Bad
+
+9. Correspondence between λ and CL
+A. Introduction
+    Λ = the set of all α-convertibility classes of λ-terms
+    C = the set of all CL-terms
+    D9.2 (The λ-mapping) For each CL-term X, \exists its λ-transform X_λ:
+        (a) x_λ = x
+        (b) I_λ = λx.x; K_λ = λxy.x; S_λ = λxyz.xz(yz)
+        (c) (XY)_λ = X_λY_λ
+    This mapping is one-one; its range is called C_λ \subsetneq Λ.
+    L9.4 Forall CL-terms X, Z, variables v
+        FV(X_λ) = FV(X)
+        ([Z/v]X)_λ = [Z_λ/x]X_λ
+    L9.5 For all CL-terms X, Y
+        X >w Y => X_λ >β Y_λ
+        X =w Y => X_λ =β Y_λ
+        X =Cext Y => X_λ =λext Y_λ
+    P. (a) all cases trivial except
+                (SXYZ)_λ = (λxyz.xz(yz))X_λY_λZ_λ
+                         >β X_λZ_λ(Y_λZ_λ)
+                         = (XZ(YZ))_λ
+                similarly for K, I.
+    
+    D9.6 (Functional CL-terms) SXY, SX, S, KX, K, I.
+    L9.7 Forall functional CL-terms U
+        (a) U_λ >β λx.M for some λ-term M
+        (b) U >w V => V is functional
+    L9.8 A CL-term X is weakly equal to a functional term iff X_λ =β an abstraction-term.
+
+B. The Extensional Equalities
+    D9.10 (The Hη-mapping) For each λ-term M, \exists a CL-term M_Hη:
+        x_Ηη = x
+        (MN)_Hη = M_HηN_Hη
+        (λx.M)_Hη = [x].(M_Hη)
+
+    L9.11 Forall CL-terms X, (X_λ)_Hη = X.
+    i.e. Hη is left-inverse of λ.
+               one-one when restricted to C_λ.
+
+    L9.13 Forall λ-terms M, N:
+        FV(M_Hη) = FV(M)
+        ([y/x]M)_Hη = [y/x](M_Hη)
+        M =α N => M_Hη = N_Hη
+        ([Ν/x]M)_Hη = [N_Hη/x](M_Hη)
+
+    L9.14 Forall λ-terms M, N:
+        λβζ |- M = N => CLζ |- M_Hη = N_Hη
+    
+    T9.15 (Equivalence of Extensional Equalities) Forall CL-terms X, Y:
+        X =Cext Y <=> X_λ =λext Y_λ
+
+    L9.16 Forall CL-terms Y, ([x].Y)_λ =λext λx.(Y_λ)
+    
+    T9.17 (Linking Extensional λ and CL) Forall CL-terms X, Y and all λ-terms M, N:
+        (a) (X_λ)_Hη = X
+        (b) (M_Hη)_λ =λext M
+        (c) X =Cext Y <=> X_λ =λext Y_λ
+        (d) M =λext N <=> M_Hη =Cext N_Hη
+
+    D9.18 (Reduction) M >βη N => M_Hη >- N_Hη but not the converse.
+    in fact X >- Y => X_λ =λext Y_λ.
+
+C. New Abstraction Algorithms in CL
+    D9.20 (Weak Abstraction) Forall CL-terms Y, [x]w.Y is defined
+        (a) [x]w.Y = KY if x \notin FV(Y)
+        (b) [x]w.x = I
+        (f) [x]w.UV = S([x]w.U)([x]w.V) if x \in FV(UV)
+    L9.22 Forall CL-terms Y, Z:
+        (a) [x]w.Y is defined and doesn't contain x
+        (b) ([x]w.Y)Z >w [Z/w]Y
+        (c) [z]w.[z/x]Y = [x]w.Y if z \notin FV(Y)
+        (d) [Z/v]([x]w.Y) = [x]w.([Z/v]Y) if x \notin FV(vZ)
+        (e) ([x]w.Y)_λ =β λx.(Y_λ)
+    L9.23 Forall CL-terms Y, [x]w.Y is functional.
+
+    D9.24 (The Hw-mapping) Forall λ-terms M, M_Hw same as M_Hη, but with [x]w.
+    L9.25 Forall λ-terms M and N:
+        (a) FV(M_Hw) = FV(M)
+        (b) M =α N => M_Hw = N_Hw
+        (c) ([N/x]M)_Hw = [N_Hw/x](M_Hw)
+
+    R9.26 (Abstraction []fab) Definition of []w, restricting (a) to atoms, but 9.22(d) would fail.
+
+    R9.27 (Abstraction []β) Curry defined, using 9.20 (a) and (b) and
+        (cβ) [x]β.Ux = U if U is fnl and x \notin FV(U)
+        (fβ) [x]β.UV = S([x].U)([x].V) if not (a) and (cβ)
+    Then the associated Hβ is such that (X_λ)_Hβ = X.
+    But then 9.22 (d) has to be
+        forall non-fnl Z
+                [Z/v]([x]β.Y) = [x]β.([Z/v]Y) if x \notin FV(vZ)
+
+D. Combinatory β-equality
+    D9.29 (Combinatory β-equality) Forall CL terms X, Y:
+        X =Cβ Y <=> X_λ =β Y_λ
+
+    We want to redefine =Cβ without using λ.
+    D9.32 (The Formal Theory CLζβ) CLζβ is obtained by adding this to CLw:
+        (ζβ) Ux = Vx
+              U = V   if x \notin FV(UV) and U, V are fnl
+    e.g. SK = KI
+
+    L9.34 Forall CL-terms X, Y and λ-terms M, N:
+        (a) CLζβ |- X = Y => λβ |- X_λ = Y_λ
+        (b) λβ |- M = N => CLζβ |- Μ_Hw = N_Hw
+
+    L9.35 Forall CL-terms X, CLζβ |- (Χ_λ)_Hw = X.
+
+    T9.36 (Equivalene of β-equalities) Determined by CLζβ.
+
+    T9.37 (Summary)  Forall CL-terms X, Y and λ-terms M, N:
+        (a) (X_λ)_Hw =Cβ X
+        (b) (M_Hw)_λ =β M
+        (c) X =Cβ Y <=> X_λ =β Y_λ
+        (d) M =β Y <=> M_Hw =Cβ N_Hw.
+
+    R9.38 (Axioms for β-equality) Can be found; theory is CLβ_ax.
+    
+    R9.39 (Rule (ξ) again) The CL-version of (ξ) is
+            X = Y
+        [x].X = [x].Y
+    and CLξ is equivt to CLζ.
+    If [] is changed to []β, the resulting theory CLξβ is equivalent to CLζβ.
+    
+    R9.41 (β-strong Reduction) []w is not confluent; []β is not nice.
+
+10. Simple Typing, Church-Style
+A. Simple Types
+    D10.1 (Simple Types) We have a finite/infinite seq of symbols, "atomic types"; then a type is
+        (a) any atomic type
+        (b) σ -> τ (function type), if σ and τ are types.
+
+    Atomic types are intended to denote sets.
+    Function types are sets of functions (could be computable or all).
+
+B. Typed λ-calculus
+    D10.3 (Typed Variables) If there is an infinite sequence of untyped variables, we make typed variables x^τ by attaching superscripts such that:
+        (a) (consistency) no variable gets > 1 type.
+        (b) every type has an infinite seq of variables.
+
+    D10.5 (Simply Typed λ-terms) If we have a finite/infinite seq of typed atomic constants, then the set of typed λ-terms is:
+        (a) all typed variables & atomic constants
+        (b) if M^(σ->τ) and N^(σ), then
+                (M^(σ->τ)N^σ)^τ
+        (c) if x^σ and M^τ, then
+                (λx^σ.Μ^τ)^(σ->τ)
+
+    e.g. Iσ = (λx^σ.x^σ)^(σ->σ); similarly K, S
+
+    D10.10 (Substitution) [N^σ/x^σ](M^τ) defined normally.
+    It has type τ.
+
+    L10.11 (a) if we replace an occurrence of P^σ in M^τ by another term of type σ, result is also of type τ.
+           (b) (for α-conversion) if (λx^σ.M^τ)^(σ->τ), then (λy^σ.[y^σ/x^σ]M^τ)^(σ->τ) also. and same type.
+           (c) (for β-conversion) if ((λx^σ.M^τ)^(σ->τ)N^σ)^τ, then [N^σ/x^σ]M^τ. and same type.
+
+    D10.12 (Simply Typed β-equality and Reduction) The formal theory is λβ->. Axiom schemes and rules:
+        (α) λx^σ.M^τ = λy^σ.[y^σ/x^σ]M^τ if y^σ \notin FV(M^τ)
+        (β) ((λx^σ.M^τ)^(σ->τ)N^σ)^τ = [N^σ/x^σ]M^τ
+        (ρ) M^σ = Μ^σ
+        (μ) M^σ = N^σ |- P^(σ->τ)M^σ = P^(σ->τ)N^σ
+        (ν) M^(σ->τ) = N^(σ->τ) |- M^(σ->τ)P^σ = N^(σ->τ)P^σ
+        (ξ) M^τ = N^τ |- λx^σ.M^τ = λx^σ.N^τ
+        (τ) M^σ = N^σ, N^σ = P^σ |- M^σ = P^σ
+        (σ) M^σ = N^σ |- N^σ = M^σ.
+
+    Reduction is same, but (σ) is omitted and > instead of =.
+
+    Note: if σ ≠ τ, M^σ = N^τ cannot be proved.
+
+    R10.13 Redex, contraction, reduction, β-nf all same.
+        (a) M^σ >β N^τ => σ = τ
+        (b) λβ-> definitions of > and = work.
+
+    D10.14 (Normalisability, WN, SN) In typed/untyped λ-calculus, M is (weakly) normalisable iff it has a normal form and strongly normalisable iff all its reductions have finite length.
+    e.g. Ω = (λx.xx)(λx.xx) is not normalisable.
+         (λx.y)Ω is weakly normalisable.
+         (λx.y)(λx.x) is strongly normalisable.
+
+    T10.15 (SN for Simply Typed >β) In λβ->, all terms are SN.
+    C10.15.1 (WN for Simply Typed >β) Every typed term has a β-nf anf all its β-reductions lead to it.
+    C10.15.2 =β is decidable!
+
+    D10.16 (Simply Typed βη) λβη-> is defined by adding
+        (η) (λx^σ.(M^(σ->τ)x^σ)^τ)^(σ->τ) = M^(σ->τ)
+                if x^σ \notin FV(M^(σ->τ)).
+    Reduction theory is defined similarly and redex, contraction, reduction, normal form are all analogous.
+
+    R10.17 SN Theorem holds for βη-reduction also.
+    R10.18 (Representability of Functions) Not all; if we use Church numerals then "extended polynomials".
+
+C. Typed CL
+    D10.19 (Simply Typed CL-terms) Typed variables, typed atomic constants inclusing I, K, S. Then all these and applications:
+        (X^(σ->τ)Y^σ)^τ
+
+    D10.21 Substitution is defined as usual.
+
+    D10.22 (Simply Typed Weak Equality and Reduction) CLw-> is the formal theory. Axiom-schemes and rules (Iσ, Kστ, Sρστ):
+        (I) IX^σ = X^σ
+        (Κ) KX^σY^τ = X^σ
+        (S) SX^(ρ->σ->τ)Y^(ρ->σ)Z^ρ = X^(ρ->σ->τ)Z^ρ(Y^(ρ->σ)Z^ρ)
+        (ρ) X^σ = X^σ
+        (μ) X^σ = Y^σ |- Z^(σ->τ)X^σ = Z^(σ->τ)Y^σ
+        (ν) X^(σ->τ) = Y^(σ->τ) |- X^(σ->τ)Z^σ = Y^(σ->τ)Z^σ
+        (τ) X^σ = Y^σ, Y^σ = Z^σ |- X^σ = Z^σ
+        (σ) X^σ = Y^σ |- Y^σ = X^σ
+    Reduction is same, without (σ) and> instead of =.
+
+    R10.23 Redex, contraction, reduction >w, weak nf are as before.
+        (a) X^σ >w Y^τ => σ = τ.
+        (b) CLw-> works.
+
+    D10.24 (Abstraction) [x^σ].X^τ is defined as
+        (a) [x^σ].X^τ = KX^τ if x^σ \notin FV(X^τ)
+        (b) [x^σ].x^σ = I
+        (c) [x^σ].(U^(σ->τ)x^σ) = U^(σ->τ) if x^σ \notin FV(U^(σ->τ))
+        (f) [x^σ].(U^(ρ->τ)V^ρ) = S([x^σ].U^(ρ->τ))([x^σ].V^ρ) if neither (a) nor (c)
+
+    SN and WN are as in λ.
+
+    T10.26 (SN for Simply Typed >w) All terms are SN.
+    C10.26.1 (WN for Simply Typed >w) All terms have a weak nf.
+    C10.26.2 =w is also decidable!
+
+    R10.27 >- can be defined and WN theorem proved, but no theorem is known for SN.
+
+11. Simple Typing, Curry-Style in CL
+A. Introduction
+    Church-style, we get infinite typed terms for each untyped term. not nice.
+    We want each term to have infinite types. nice. (polymorphic system)
+
+    D11.1 (Parametric Types) We have type-vars and type-consts. Then
+        (a) all of those: atomic
+        (b) (σ -> τ): parametric/function-type
+    Closed type: no   type-vars
+    Open       : only
+
+    Note: Nτ = (τ -> τ) -> τ -> τ
+
+    R11.3 Function-type σ -> τ has domain \superseteq σ.
+
+B. The System TA->_C
+    D11.4 A type-assignment formula or TA->_C-formula is an expression X:τ.
+    "X receives type τ"
+
+    D11.5 (The Type-Assignment System TA->_C) Formal theory; axiom-schemes:
+        (->I) I : σ -> σ
+        (->K) K : σ -> τ -> σ
+        (->S) S : (ρ -> σ -> τ) -> (ρ -> σ) -> ρ -> τ
+    and rule:
+        (->e) X : σ -> τ Y : σ
+                   XY : τ
+    e.g. |-_(TA->_C) SKK : σ -> σ
+
+    N11.10 Actually one more axiom: Set of axioms is closed under substitution.
+
+    L11.11 (Closure under Type-Substitution) If Γ is a set of TA->_C formulas, and Γ |- X : τ, then
+        [σ1/a1,...,σk/ak]Γ |- X : [σ1/a1,...,σk/ak]τ
+
+    N11.12 (Principal Axioms) I : a -> a
+                              K : a -> b -> a
+                              S : (a -> b -> c) -> (a -> b) -> a -> c
+
+C. Subject-Construction
+    Deduction of X : τ closely follows construction of X.
+    If D is a deduction of X : τ from assumptions
+        U1 : π1, ..., Un : πn
+    if Ui are atoms, removing the types from D gives us X's construction-tree; each occurrence of Ui is an assumption Ui : πi; if Z is a subterm of X, each occurence corresponds to a formula in D like Z : ...
+    if not all are atoms, the tree will be a lower part of the construction-tree.
+    Corollary: if Γ |- X : τ and all subjects in Γ are atoms, every non-redex atom q in X corresponds to some q : π in Γ.
+
+D. Abstraction
+    T11.14 (Abstraction and Types) If Γ is a set of TA->_C formulas, none of which contain x, and
+        Γ, x : σ |- X : τ
+    then
+        Γ |- [x].X : σ -> τ
+    where [] is normal, w or β.
+    P. Induction of X.
+        1. x \notin FV(X) and [x].X = KX
+                Γ |- KX : σ -> τ
+        2. Χ = x and [x].X = I
+                Γ |- I : σ -> τ
+        3. X = Ux, x \notin FV(U) and [x].X = U
+                Γ |- [x].X σ -> τ
+        4. X = X1X2, [x].X = S([x]'.X1)([x]'.X2)
+                works out dw.
+    C11.14.1 If Γ, x1 : σ1, ..., xn : σn |- X : τ
+    then Γ |- ([x1,...,xn].X) : σ1 -> ... -> σn -> τ
+    C11.14.2 If all subjects in Γ are atoms, extends to []fab.
+
+E. Subject-Reduction
+    D11.17 (Inert Assumptions) A CL-term U is weakly/strongly inert iff it is a weak/strong nf whose leftmost atom is non-redex.
+    A set of TA->_C formulas is inert if all its subjects are.
+
+    L11.18 (Replacement) Say Γ1 and Γ2 are sets of formulas and D gives Γ1 |- X : τ.
+    Say V occurs in X and V : ρ occurs in D (same place as V in constr-tree). Let X* be the result of replacing V by W;
+        Γ2 |- W : ρ.
+    Then
+        Γ1 \union Γ2 |- X* : τ
+    P. Cut off the subtree above V : ρ in D; replace it with the deduction of W : ρ.
+
+    T11.19 (Subject-Reduction) Γ is a weakly/strongly inert set of TA->_C formulas. If Γ |- Χ : τ and X >w/>- X', then Γ |- X' : τ.
+    P. X = IX'
+        D contains a deduction of X' : τ. [I, IX' not in Γ]
+       X = KX'Y
+        D still contains the deduction. [K, KX', KX'Y not in Γ]
+       X = SUVW and X' = UW(VW)
+        D contains U : ρ -> σ -> τ,
+                   V : ρ -> σ, 
+                   W : ρ, so you can get X' : τ.
+    
+    R11.20 (Subject-Expansion) Reversal is possible under very restrictive conditions. Not possible when
+        X = SKSI and X' = KI(SI)
+            SIII          II(II)
+
+F. Typable CL-Terms
+    D11.21 (Type-Contexts) A type-context is a finite/infinite set of TA->_C formulas Γ whose subjects are variables and which is consistent.
+    FV(X)-context is one which covers exactly FV(X).
+
+    N11.22 Basically mapping from vars to types
+           and inert so subject-reduction applies.
+
+    D11.23 (Typable Pure Terms) Let X be any pure CL-term with FVs x1,...,xn. X is typale iff \exists a context and a type τ such that
+        context |- X : τ
+    e.g. I, K, S, B, W, KK, SB, KI, n_Ch, D, R_Bernays
+         x, xz(yz)
+         but not xx
+    
+    L11.25 (a) A pure CL-term X is typable iff all its subterms are.
+           (b)                                 D11.23 is satisfied.
+           (c) The set of all typable pure CL-terms is closed under weak, strong reduction, []-abstraction, not expansion or application.
+
+    T11.26 (Decidability of Typability) It's decidable!
+
+    T11.27 (SN Theorem for >w) Every typable pure CL-term is strongly normalisable wrt >w; if Γ is weakly inert and |- X : τ, then X is SN wrt >w too.
+    C11.27.1 (WN Theorem for >w) Every TPCL-term has a WN form.
+    
+    T11.28 (WN Theorem >-) Every TPCL-term has a strong nf.
+    C11.28.1 In CL the fixed-point combinators Y_Turing and Y_Curry-Ros are untypable.
+
+G. Link with Church's Approach
+    D11.29 For every typed term Y^τ, define |Y^τ| to be the corresponding untypes term.
+    Not a one-one correspondence.
+
+    A TA->_C proof and a closed pure type are actually the same idea.
+    
+    L11.30 A closed pure CL-term X is typable iff \exists Y^τ s.t. |Y^τ| = X.
+
+    D11.31 (Non-closed Terms) If Y^τ contains variables, their types are assumptions in the corresponding TA->_C deduction. But reverse is tricky.
+    The only deductions that correspond to typed terms are those whose assumptions are from the OG {v : τ}.
+
+H. Principal Types
+    D11.32 (Principal Type/PT) Let X be a pure CL-term with FVs x1...xn.
+        (a) n = 0: PT of X is any type π s.t.
+                (i) |- X : π
+                (ii) |- X : τ => τ is a substitution-instance of π
+        (b) n ≥ 0: <Γ,π> is a principal pair/PP of X and π is a PT of C iff
+                (i) Γ is an FV(X)-context and Γ |- Χ : π
+                (ii) Γ' |- X : τ => <Γ',τ> is a substitution of <Γ,π>.
+
+    R11.35 (Pseudo-Uniqueness of PT) Not exactly but what's in a name?
+
+    T11.36 (Principal-Types Theorem) Every TPCL-term has a PT and a PP.
+    P. relies on subject-construction from 11C. write tree and fill in.
+    ~ The Principal-Type/Type-Reconstruction/Type-Inference Algorithm.
+
+I. Adding New Axioms
+    E11.40 (The Arithmetical Basis B_Z)
+        0' : N
+        σ' : N -> N
+        Z  : N -> N_τ
+    (N is a type-constant and N_τ = (τ -> τ) -> τ -> τ
+
+    E11.42 (Two Bases for the Church Numerals)
+        (i) KI : N
+            SB : N -> N
+     or (ii) (SB)^n(KI) : N  (n \in [1..])
+    
+    E11.43 (Proper Inclusions)
+        I : μ -> ν means that μ \subseteq ν. But we can't deduce X : ν from X : μ because not inert.
+
+    D11.44 (Monoschematic Bases) A set of TA->_C formulas 
+        B = {U1 : π1, ...}
+    is a monoschematic basis iff each Ui is a non-redex constant and B contains a prinicipal axiom for each Ui.
+    R11.45 B_Z is a monoschematic basis but not 11.42 wale.
+
+    D11.46 (Relative Typability) Is B is a set of typable formulas, X a CL-term with FVs x1,...,xn, then
+        (a) X is typable relative to B iff \exists an FV(X)-context and a type τ such that B, context |- X : τ.
+        (b) π is a PT of X relative to B and <Γ,π> is a PP of X relative to B iff
+                (i) Γ is an FV(X)-context and B \union Γ |- X : π
+                (ii) B \union Γ' |- X : τ => <Γ',τ> is a substitution-instance of <Γ,π>.
+    
+    R11.47 (Extending Previous Theorems) If TA->_C is extended by adding a monoschematic/inert basis B, then
+        11.14 (Abstraction and Types) holds
+        11.36 (Principal-types) holds
+        11.26 (Decidability of Typability) doesn't always
+        11.27 (SN) hols for >w if B is weakly inert
+        for B_Z, subject-reduction and SN both hold for >wz
+
+    R11.48 (Extending Subject-Reduction)
+    (a) If is weakly/strongly inert, subject-reduction holds for >w/>-. Also holds if every subject in Γ (11.19) is an nf.
+    (b) Doesn't hold for, e.g., 
+        0_Ch : N
+        BW(BB) : N -> N
+    BW(BB) behaves like σ_Ch and BW(BB)0 : N is deducible. But W(BB0) : N is not!
+
+J. Propositions-as-Types and Normalisation
+    D11.49 (->e) is like modus ponens if you remove the subjects.
+
+    D11.50 A type σ is inhabited iff \exists a closed term M s.t. |- M : σ.
+    Inhabited types -> provable propositional formulas
+
+    D11.51 (Reducing Deductions) We can do it by associating terms with deductions.
+
+    D11.52 (Deduction-Reductions for TA->_C) A reduction of one deduction to another consists of a sequence of replacements according to following rules:
+      I-reductions
+                      D1                      D1
+        I : τ -> τ   X : τ     reduces to    X : τ
+                IX : τ                        D2'
+                  D2
+        where D2' = [X/IX]D2
+        Similarly for KXY = X and SXYZ = XZ(YZ).
+
+    R11.53 Let D give Γ |- X : τ.
+        (a) If a reduction of D is possible, X contains a weak redex; if D reduces to D' then X weakly reduces to X', and D' gives Γ |- X' : τ, (X >w X').
+        (b) If X contains a weak redex and Γ is weakly inert, then a reduction of D is possible. X >w Y => D can be reduced to one giving Γ |- Y : τ.
+        (c) A deduction that cannot be reduced is normal
+
+    D11.54 (Assignment of Typed Terms to Deductions) For each deduction D a typed term T(D). Let c be any atomic type; sub it for all type-vars in D, and pick one type-var v^τ for each type τ.
+        (ab) for x : ρ or U : ρ, v^ρ
+        (c) for I : σ -> σ, Iσ
+        (d) for K : σ -> τ -> σ, Kστ
+        (e) for S : (ρ -> σ -> τ) -> (ρ -> σ) -> ρ -> τ, Sρστ
+        (f) to the conclusion of (->e), application of two premises' terms.
+
+    L11.55 If D, E are TA->_C deductions and D reduces to E by one replacement, then T(D) reduces to T(E) by one weak contraction.
+
+    T11.56 (SN for Deductions) Every reduction of a TA->_C deduction is finite.
+    C11.56.1 (SN for CL-terms) If Γ is weakly inert and Γ |- X : τ, then all weak reductions of X are finite.
+
+    R11.57 If not inert, can fail. e.g.
+        Γ = {YK : τ}; Γ |- YK : τ but no scene.
+
+    But can also be true:
+    R11.58 (Bases with a Universal Type)
+    Type-const ω, basis B contains X : ω forall Χ. If B - all this is weakly inert, and if D gives B |- Y : τ, then all weak redexes in Y receive type ω in D.
+    R11.59 (Bases with Proper Inclusions) If B contains I : μ -> ν, it's not inert. and if this formula is used, can be a redex in conclusion. e.g.
+        B = {I : (a -> b) -> c -> d, G : b, H : c}
+        and B |- I(KG)H : d
+    If B - proper inclusions is inert, then B |- Y : τ => Y has an nf, provided that for each proper inclusion, either
+        ν is a type-const or
+        for each U s.t B |- U : μ, n ≥ 0, each reduction of Ux1...xn is proceeds entirely inside U.
+
+    R11.60 (βη-reducing a Deduction) Can add this rule:
+    If x : σ                   x : σ
+        D1      reduces to      D2
+       X : τ                   Y : τ
+    and by 11.14,
+          D1'                D2'
+     [x].X : σ -> τ and [x].Y : σ -> τ
+    then
+          D1'                             D2'
+     [x].X : σ -> τ    reduces to    [x].Y : σ -> τ
+          D3                              D3'
+    where D3' = replace [x].X with [x].Y in D3.
+    
+    Every deduction from a strongly inert basis has an nf wrt this reduction ("strong").
+
+K. The Equality-Rule Eq'
+    Typing not invariant under equality. So we can add a rule:
+    (Eq') X : τ   X =* Y
+              Y : τ
+    where =* is =w, =Cβ or =Cext (this is actually 3 rules Eq'w, Eq'β, Eq'ext).
+
+    D11.61 (The Systems TA->_C=) TA->C=w, TA->_C=β, TA->_C=ext made by adding above rule to TA->_C.
+
+    R11.62 (Undecidable) It's undecidable.
+
+    D11.63 Eq' application can be postponed.
+
+    T11.64 (Eq'-postponement) If =* is =w, =β or =Cext and Γ |- X : τ, then \exists Y =* X s.t. Γ |- Y : τ.
+    C11.64.1  (WN Theorem for TA->_C=) If Γ is weakly/strongly inert and Γ |- X : τ in TA->_C=w/TA->_C-ext, then X has a weak/strong nf.
+    
+    R11.65  (a) Extending C11.64.1 to =Cβ would depend on β-strong reduction (R9.41).
+            (b) C11.61.1 cannot be strengthened to X having SN. e.g. X = Y(KI), which has an nf X >w KIX >w I but also inf red X >w KI(X) >w KI(KIX) ...
+
+    D11.66 (Typability in TA->_C=) Typable, PT, PP all same (11.23, 11.32).
+
+    T11.67 Let =* be =w/=ext. Then a pure CL-term X is typable in CL->_C= iff X has an nf X* typable in TA->_C. Also the type in both systems is the same.
+
+    T11.68 (Principal Types in TA->_C=) Let =* be =w, =Cβ or =Cext.
+        (a) Every pure CL-term typable in TA->_C= has a PT, PP in TA->_C=.
+        (b) If B is a monoschematic basis of axioms, every term typable relative to B has a PT, PP relative to B.
+
+    W11.69 The principal type may not be the same in both systems, so not the same as the PT theorem for TA->_C. e.g.
+        SKSI has PT (a -> b) -> a -> b in TA->_C
+        but SKSI >w I and .: has PT a -> a in TA->_C=.
+
+12. Simple Typing, Curry-Style in λ
+A. The System TA->_λ
+    I = λx.x, K = λxy.x, S = λxyz.xz(yz)
+    Types, type-assignment formulas, and (->e) are as before.
+
+    D12.1 (The -> introduction rule) We don't need (->I), (->K) or (->S); we need a rule for (λx^σ.M^τ)^(σ->τ). This is (->i):
+        If x \notin FV(L1,...,Ln) and
+           L1 : ρ1, ..., Ln : ρn, x : σ |- M : τ
+        then L1 : ρ1, ..., Ln : ρn |- (λx.M) : (σ -> τ)
+    written:
+            [x : σ]
+             M : τ
+        (λx.M) : (σ -> τ)
+    and after [x : σ] is used, it is discharged and no longer counts.
+    All occurrences of it above are then bracketed.
+
+    Only branch-top formulas can be discharged.
+
+    D12.5 We also want an α-invariance property.
+        Γ |- M : τ, M =α N => Γ |- N : τ.
+    If Γ has only atoms, then it works. Otherwise we need infinite assumptions. So new rule.
+
+    D12.6 (The Type-Assignment System TA->_λ) No axioms, three rules:
+        (->e) M : σ -> τ    N : σ
+                     MN : τ
+        (->i)     [x : σ]               condition: discharge
+                   M : τ
+              (λx.M) : (σ -> τ)
+        (=α') M : τ    M =α Ν           condition: M ≠ N, M : τ is not a conclusion.
+                   Ν : τ
+    
+    Γ |- M : τ means that there is a deduction of M : τ whose undischarged assumptions are members of Γ.
+
+B. Basic Properties of TA->_λ
+    D12.10 (Kinds of Assumption-Sets) If Γ is a set of TA->_λ formulas, it is β-/βη-inert if every subject is β-/βη-nf which doesn't start with λ.
+    Monoschematic basis is same as in CL (11.44).
+
+    L12.11 (Closure under Type-Substitution) If Γ |- M : τ, then forall a1,...,ak and types σ1,...,σk,
+        [σ1/a1,...,σk/ak]Γ |- Μ : [σ1/a1,...,σk/ak]τ
+
+    L12.12 (α-invariance) If Γ |- M : τ, and M =α N, then Γ |- N : τ.
+
+    R12.13 (The Subject-Construction Property) Deduction of M : τ closely follows construction of M. Only that rule (=α') can be used only at the top of a branch.
+
+    L12.17 (Replacement) Let D be a deduction giving Γ1 |- X : τ. Let V be a term-occurrence in X in the scope of λx1,...,λxn. Let D contain V : σ in the same position and let xi : ρi be the assumptions discharged by (->i).
+    If V : σ \notin Γ1, and W is a term s.t. FV(W) \superseteq FV(V), Γ2 is a set whose formulas' subjects don't have xi free, and
+        Γ2, x1 : ρ1, ..., xn : ρn |- W : σ,
+    and X* = [W/V]X, then
+        Γ1 \union Γ2 |- X* : τ.
+    P. Cut off the derivation of V : σ and stick that of W : σ and replace.
+
+    L12.18 Let Γ be a set of formulas s.t. x does not occur in any term. Let Γ, x : σ |- Y : τ.
+    Then forall U, Γ, U : σ |- [U/x]Y : τ.
+
+    T12.19 (Subject-Reduction) If Γ is a β-/βη-inert set of TA->_λ formulas and Γ |- Χ : τ, and X >β/βη Χ', then
+        Γ |- Χ' : τ.
+    P. If α, use L12.12
+       If βη, (i) X = (λx.M)N; X' = [N/x]M
+                  Then Γ |- λx.M : σ -> τ & Γ |- N : σ
+                  and Γ, x : σ |- M : τ,
+                  and then Γ |- [N/x]M : τ.
+              (ii) X = λx.Mx, X' = M
+                   Then Γ, x : ρ |- Μx : σ
+                   and Γ, x : ρ |- M : μ -> σ & Γ, x : ρ |- x : μ
+                   so μ = ρ. So Γ, x : ρ |- M : τ
+                   and x : ρ can be omitted.  
+    
+    R12.20 Will work even if condition on Γ is:
+                all subjects in nf
+                if begins with λ, then type is atomic const.
+
+    R12.21 T12.19 can't be reversed in general.
+
+C. Typable λ-Terms
+    Type-context is same, FV(X)-context is same.
+    
+    D12.22 (Typable Pure λ-Terms) A pure λ-term X, with FVs x1,...,xn, is typable iff \exists a context xi : ρi, and a type τ s.t.
+        x1 : ρ1, ..., xn : ρn |- X : τ.
+    
+    L12.24 In TA_λ
+        (a) a pure λ-term X is typable iff all its subterms are
+        (b) set of typable pure λ-terms is closed under β- and βη-reduction, abstraction, but not expansion, application.
+
+
+    D12.25 (Principal Type PT) X is a pure λ-term with FVs x1,...,xn.
+        (a) n = 0: π is a PT of X iff |- X : τ holds iff τ is a subst-inst of π.
+        (b) n ≥ 0: <Γ,π> is a PP of X and π a PT of X iff Γ is an FV(X)-context and Γ' |- X : τ holds iff <Γ',τ> is a subst-inst of <Γ,π>.
+
+    T12.28 (PT Theorem) Every typable pure λ-term has a PT and a PP.
+
+    T12.29 (Decidability of Typability) It's decidable!
+
+    T12.30 (Equivalence of TA->_C and TA->_λ) Let H be H_η, H_w or H_β. Then
+        (a) Γ |- X : τ => Γ_λ |- X_λ : τ
+        (b) Γ |- M : τ => Γ_H |- M_H : τ
+
+D. Propositions-as-Types and Normalisation
+    D12.32 (Deduction-Reductions for TA->_λ) Rule:
+       [x : σ]
+        D1(x)
+        M : τ              D2
+     λx.M : σ -> τ        N : σ
+              (λx.M)N : τ
+                   D3
+        can be reduced to
+                D2
+               N : σ
+               D1(N)
+            [N/x]M : τ
+                D3'
+    where D3' is from D3 by replacing (λx.M) with [N/x]M.
+
+    T12.33 (WN for Deductions) Every TA->_λ-deduction can be reduced to a normal deduction.
+
+    C12.33.1 (WN for λ-Terms) Let Γ be β-inert. If Γ |- Μ : τ, then M has a β-nf.
+
+    R12.34 WN for typable pure λ-terms is from preceding theorem and corollary.
+
+    T12.35 (SN for λ-Terms and >β) Every typable pure λ-term is SN wrt >β.
+    P. Let M0 be a pure λ-term and D0 be a deduction of M0 : τ from Γ. If M0 > M1 =α M1' > M2 =α > M2' ...
+        For each k ≥ 0, \exists Dk giving Γ |- Mk : τ. We can assign M*τ_k can be assigned to Dk, by first assigning a variable to xi : ρi in Γ. Then one builds abstraction and application terms.
+        A suitable choice of mapping makes it an infinite reduction of M*τ_0, QEA.
+
+    R12.26 (βη-Reduction) Extra rule:
+           D1
+       M : σ -> τ       [x : σ]
+                Mx : τ
+             λx.Mx : σ -> τ
+                   D2
+    where x \notin FV(D1), reduces to
+        D1
+     M : σ -> τ
+        D2'
+    where D2' = [M/λx.Mx]D2.
+
+E. The Equality-Rule Eq'
+    (Eq') X : τ  X =* Y
+             Y : τ
+    Actually two: =β or =βη
+
+    D12.37 (The Systems TA->_λ=) Obtained from TA->_λ by adding Eq'. Eq'β gives TA->_λ=β, Eq'βη gives TA->_λ=βη.
+
+    R12.38 TA->_λ= is undecidable.
+
+    D12.39 Eq'-postponement theorem can be rpived by adding the extra case of (->i):
+        [x : σ]
+         D1(x)
+         X : τ      X =* Y
+               Y : τ
+           λx.Y : σ -> τ
+                D2
+     can be replaced by
+        [x : σ]
+         D1(x)
+         X : τ
+     λx.X : σ -> τ      λx.X =* λx.Y
+               λx.Y : σ -> τ
+                    D2
+
+    
+    T12.40 (Eq'-postponement) If Γ is any set of TA->_λ formulas, and Γ |- X : τ, then \exists Y =* X s.t. Γ |- Y : τ.
+    C12.40.1 (WN Theorem for TA->_λ=) If Γ is β-/βη-inert, and Γ |- X : τ, then Χ has β-/βη-nf.
+    C12.40.2 (Principal Type Theorem for TA->_λ=) Let =* be =λβ or =λβη. Then every typable pure λ-term has a PT and a PP in TA->_λ=.
+
+    R12.41 Typable, PT, PP are defined as before. but PT may be different or non-existent in TA->_λ.
+
+    T12.42 For either =*, a pure λ-term X is typable in TA->_λ= iff X has an nf X* typable in TA->_λ. Type is the same.
+    
+    T12.43 (Equivalence of TA->_C= and TA->_λ=) If TA->_λ=, TA->_C= and H are compatible, then
+        (a) Γ |- X : τ <=> Γ_λ |- Χ_λ : τ
+        (b) Γ |- Χ : τ <=> Γ_H |- X_H : τ.
+
+    TA->_C=, TA->_λ= and H are compatible iff they are either
+        TA->_C=β,   TA->_λ=β,  H_β, or
+        TA->_C=ext, TA->_λ=βη, H_η
+
+13. Generalisations of Typing
+A. Introduction
+    Easy to generalise by adding new type-forming ops
+    e.g. cartesian product x
+                D  : α -> β -> (α x β)
+                D1 : (α x β) -> α
+                D2 : (α x β) -> β
+    but not major changes.
+
+B. Dependent Function Types, Introduction
+    (Πx:σ . τ(x)) which can be read as forall x \in σ, τ(x).
+    type is just a special kind of term now.
+    if τ(x) is a constant fn, reduces to σ -> τ.
+    two rules:
+        (Π e) M : (Πx:σ . τ(x))   N : σ
+                       MN : τ(N)
+        (Π i)        [x : σ]            condition: x:σ is the only undischarged assumption
+                     M : τ(x)           in which x is free; x is not free in σ
+              (λx.M) : (Πx:σ . τ(x))
+    and
+        (Eq'') M : σ  σ =β τ
+                   Μ : τ
+
+    called "cartesian product type"
+
+    R13.2 Represents implication and also universal quantification.
+        (Π e) is elimination and (Π i) is introduction of quantifier.
+    R13.3 Only λ.
+
+    Two approaches:
+        G1. if term T is a type and contains var x, [N/x]T is a type regardless of N.
+        G2. [N/x]T is a type only if N has same type as x.
+
+C. Basic Generalised Typing, Curry-Style in λ
+    (G1)
+    We have a (poss inf) set of atomic type constants θ^n_i each w degree n (arity).
+    D13.5 Terms are defined as
+        T1. any variable
+        T2. any atomic type const
+        T3. if M, N are terms, then so is MN
+        T4. if x is a var and M is a term, then so is (λx.M)
+        T5. if M, N are terms and x \notin FV(M) is a var, then so is (Πx:M . N)
+
+    R13.6 The scope of Πx is N and Πx binds all free occurrences of x in N.
+
+    D13.7 (Type Functions and Types) Proper type funcs of given deg and rank are defined as
+        B1. Atomic type const of deg n is an atomic PTF of deg n, rank 0.
+        B2. If σ is a PTF of deg m > 0, rank k and M is any term, σM is a PTF of deg m-1, rank k.
+        B3. If σ is a PTF of deg m, rank k, then λx.σ is a PTF of deg m+1, rank k.
+        B4. If σ and τ are PTFs of deg 0, ranks k & l resp; if x \notin FV(σ); then (Πx:σ . τ) is a PTF of deg 0 and rank 1 + k + l.
+    σ is a type func of rank k and deg m iff \exists a PTF τ of same deg, rank s.t. σ >β τ.
+    A type is a type func of deg 0.
+
+    degree is arity, rank is no. of occurrences of Π.
+
+    T13.8 The degree and rank of a type function are unique.
+
+    R13.9 (i) If σ is a TF of deg m, rank k; and T is a term =β σ, then T is a TF w same deg, rank.
+          (ii) λx.σ increases degree by 1
+          (iii) σM decreases degree by 1
+          (iv) Πx:σ . τ is a TF of deg 0, rank k iff σ is deg 0, rank i, τ is deg 0, rank j, and k = i + j + 1.
+
+    R13.10 For these types to be more general, there has to be ≥ 1 atomic type const w deg > 0.
+    C13.10.1 If every type const has deg 0, then back to simple types.
+
+    D13.11 (The Type Assignment System TAG_λ) Formulas have form m : σ for λ-terms M, types σ.
+    No axioms.
+    Rules:
+        (Π e) M : (Πx:σ . τ)  N : σ
+                  MN : [N/x]τ
+        (Π i)         [x : σ]           condition: x:σ is the only undischarged assumption
+                       M : τ            in which x is free; x is not free in σ
+                (λx.M) : (Πx:σ . τ)
+        (Eq'') M : σ   σ =β τ
+                   Μ : τ
+        (=α') M : σ   M =α N            condition: M ≠ N
+                  N : σ
+    
+    R13.13 Condition on (Π i) means if we want to discharge x1 : σ1, ..., xn : σn in reverse order, xi occurs free only in σ(i+1), ..., σn.
+
+    D13.14 A context is a finite sequence (not set) of formulas xi : σi s.t. xi are all distinct. It is legal for TAG_λ iff
+        L1. forall i, xi only occurs free after i.
+
+    Note: types only for variables; if types for atomic consts, axioms.
+
+    D13.15 TAG_λa (alternative formulation of generalised typing) has statements of the form Γ |- Μ : σ, where Γ is a context, M a term, σ a type. There can be axioms c : σ, where c is an atomic const and σ a type. Rules:
+      (axiom)                 condition: c : σ \in A
+              |- c : σ
+      (start)                         condition: x \notin FV(Γ,σ)
+              Γ, x : σ |- x : σ
+      (weakening)     Γ |- M : τ      condition: same
+                  Γ, x : σ |- M : τ
+      (application) Γ |- M : (Πx:σ . τ)   Γ |- Ν : σ
+                          Γ |- ΜΝ : [N/x]τ
+      (abstraction)    Γ, x : σ |- M : τ        condition : same
+                    Γ |- (λx.M) : (Πx:σ . τ)
+      (conversion) Γ |- Μ : σ   σ =β τ
+                       Γ |- M : τ
+      (α-conv) Γ |- M : σ   M =α N
+                     Γ |- N : σ
+
+D. Deductive Rules to Define Types
+    (G2)
+    Substituted term should match type of variable.
+    Statement that a term is a type has to be proved.
+    Therefore we need type of types.
+
+    We will consider arrow types and extend to dependent types.
+    We modify TA->_λ by adding a const * to represent type of types (not including *).
+    D13.17 The typing system λ-> is defined by adding to TA->_λ the const *, the axioms θ : * for all type-consts θ, and the rule:
+        (->f) σ : *   τ : *
+              (σ -> τ) : *
+    and modifying (->i) to
+        (->i) [x : σ]                   condition: same
+               M : τ    (σ -> τ) : *
+                 (λx.M) : (σ -> τ)
+
+    To extend λ-> to parametric types, add assumptions v : * for each type-var v. so Γ |- M : σ in TA->_λ iff
+                  Γ, v1 : *, ..., vn : * |- M : σ in λ->
+                  where vi are the type-vars in Γ, σ.
+    Types like * are called sorts.
+
+    D13.18 In systems of type assignment where being a type is determined by axioms, rules, types whose terms are all types are called sorts.
+
+    In some systems, (->i) is modified
+        (->i) [x : σ]           condition: smame
+               M : τ    σ : *
+              (λx.M) : (σ -> τ)
+    If this+rule plus other rules ensure that only ": type" occurs, then cool; otherwise difference.
+
+    Sometimes (->f) is generalised to
+        (->g)        [x : σ]    condition: same
+              σ : *   τ : *
+              (σ -> τ) : *
+    Now, if we want to discharge x1 : σ1, ..., xn : σn in reverse,
+        Γ, x1 : σ1, ..., x(i-1) : σ(i-1) |- σi : *
+    Variables don't occur in types here.
+
+    D13.19 A legal context for λ-> is one where
+        L1. forall i, xi only occurs free after i
+        L2. forall i, either σi = * or the above.
+
+    Then the alternative version of λ-> (like TAG_λa) is defined as λ->a,
+    D13.20 We have a (poss inf) sequence θ1,... pf atomic types and a symbol * (sort) distinct from θi. Statements are Γ |- M : σ. Set A of axioms consists of θn : * forall n. Rules are:
+      (axiom)                   Condition: θi : * \in A
+                |- θi : *
+      (start1)     Γ |- σ : *      Condition: x \notin FV(Γ,σ)
+               Γ, x : σ |- x : σ
+      (start2)
+                x : * |- x : *
+      (weakening1) Γ |- Μ : τ   Γ |- σ : *      condition: same
+                      Γ, x : σ |- M : τ
+      (weakening2)    Γ |- M : τ        condition: same
+                   Γ, x : * |- M : τ
+      (application) Γ |- M : σ -> τ   Γ |- Ν : σ
+                            Γ |- MN : τ
+      (abstraction) Γ, x : σ |- M : τ   Γ |- (σ -> τ) : *       condition: same
+                           Γ |- (λx.M) : (σ -> τ)
+      (product) Γ |- σ : *    Γ, x : σ |- τ : *         condition: same
+                       Γ |- (σ -> τ) : *
+      (conversion) Γ |- M : σ   σ =β τ   Γ |- τ : *
+                              Γ |- Μ : τ
+      (α-conv) Γ |- M : σ   Μ =α N        condition: M ≠ N
+                   Γ |- N : σ
+
+   D13.21 Extend from ->-types to Π-types! We need a rule like (->f) and (Π i) has to be modified.
+        (Π f)         [x : σ]   condition: that long one
+               σ : *   τ : *
+              (Πx:σ . τ) : *
+        (Π i) [x : σ]                  condition: the same long one
+               M : τ    (Πx:σ . τ) : *
+                 (λx.M) : (Πx:σ . τ)
+    If the only axioms were θi : *, then we'd get a system only as general as λ->a only. No use.
+    We could postulate type funcs w deg ≥ 1.
+    But axioms would have to be 
+        θ : (Πx1:σ1 . Πx2.σ2 . ... . Πxn:σν . *)
+    and it is impossible to prove
+        (Πx1:σ1 . Πx2.σ2 . ... . Πxn:σν . *) : *
+    so cool property gone.
+    So this generalisation is useless.
+
+    Aajkal people have more than one sort and allow some sorts to be the terms of the type of another sort. E.g. we can postulate * : ■. That's what we'll do.
+
+E. Church-Style Typing in λ
+    Now instead of λx^σ.M, we write (λx:σ . M).
+    We will define "pseudoterms" and then decide which ones are not pseudo.
+
+    D13.22 Pseudoterms are defined as follows:
+        PT1. any variable
+        PT2. any atomic type const
+        PT3. If M, N, then MN
+        PT4. If x is a var, M, N, then (λx:M . N)
+        PT5. If M, N and x is a var \notin FV(M), then (Πx:M . N)
+    Reduction is replacing β-contraction with
+        (λx:A . M)N > [N/x]M
+
+    8 typing systems constitute λ-cube; all based on dependent fn type and have 2 sorts, * and ■.
+    All have only one axiom * : ■.
+    Rules are like those of λ->a.
+
+    D13.23 (λ-cube) All based on pseudoterms; have two special constants * and ■; one axiom * : ■.
+    Set R of special rules of the form (s1,s2) [sorts]. Deduction rules:
+      (axiom)
+              |- * : ■
+      (start)    Γ |- A : s         condition: x \notin FV(Γ,A), s is a sort
+              Γ, x : A |- x : A
+      (weakening) Γ |- M : B    Γ |- A : s      condition: same
+                     Γ, x : A |- M : B
+      (application) Γ |- M : (Πx:A . B)    Γ |- N : A
+                            Γ |- ΜΝ : [N/x]B
+      (abstraction) Γ, x : A |- M : B   Γ |- (Πx:A . B) : s     condition: same
+                        Γ |- (λx:A . M) : (Πx:A . B)
+      (product) Γ |- A : s1   Γ, x : A |- B : s2        condition: (s1,s2) \in R, and x \notin FV(Γ,A)
+                      Γ |- (Πx:A . B) : s2
+      (conversion) Γ |- Μ : A   A =β B   Γ |- Β : s     condition: s is a sort
+                              Γ |- M : B
+      (α-conv) Γ |- M : A   M =α Ν      condition: M ≠ N
+                   Γ |- Ν : A
+    
+    A pseudocontext is a sequence of formulas x1 : A1, ..., xn : An. It's a legal context iff
+        L1. xi only occurs free after i, and
+        L2. forall i either Ai = s for some sort s
+                         or x1 : A1, ..., x(i-1) : A(i-1) |- Ai : s.
+    
+    A pseudoterm M/A is a term/type iff \exists a legal context Γ and a pesudoterm A/M s.t. Γ |- M : A
+
+    System R
+    λ->    (*,*)
+    λ2     (*,*) (■,*)
+    λP     (*,*)       (*,■)
+    λP2    (*,*) (■,*) (*,■)
+    λω_    (*,*)             (■,■)
+    λω     (*,*) (■,*)       (■,■)
+    λPω_   (*,*)       (*,■) (■,■)
+    λPω=λC (*,*) (■,*) (*,■) (■,■)
+
+    all guarantee only legal contexts to the left of '|-'
+    Γ is legal <=> Γ |- * : ■ is derivable.
+
+    D13.25 Arrow type A -> B is defined as (Πx:A . B) where x \notin FV(B).
+
+    R13.26 λ-> above is the same as λ->a in D13.20. If Γ |- Α : *, then A is built up from all the terms B for which B : * is in Γ, using ->.
+    Doesn't allow quantification over types.
+
+    R13.27 λ2 has (■,*) also. Can quantify over *.
+        |- (Πu:* . u -> u) : *
+    and then
+        |- (λu:* . λx:u . x) : (Πu:* . u -> u)
+    If ⊥ = (Πu:* . u), it's falsum. Then
+        |- (λv:* . λx:⊥ . xv) : (Πx:* . ⊥ -> v)
+    is ex falso quodlibet.
+
+    Slightly modified form of System F (Girard & Reynolds)
+
+    R13.28 λω_ ~ POLYREC (polymorphic & recursive types). need type constructors; (■,■) allows because
+        |- (* -> *) : ■
+    
+    R13.29 λP has (*,■); allows for types depending on terms, because
+        u : * |- (u -> *) : ■
+    Then u : *, p : (u -> *), x : u |- px : *.
+    And px is a type that depends on x.
+    Also u : *, p : (u -> u -> *) |- (Πx:u . pxx) : *. (binary predicate)
+    Also u : *, p : (u -> *), q : (u -> *) |- (Πx:u . (px -> qx)) : * (inclusion)
+
+    R13.30 λω is like λω_ + λ2. related to F2 of Girard.
+    Define
+        u Λ v = Πw:* . (u -> v -> w) -> w
+    Can derive u : *, v : * |- u Λ v : *.
+    Let AND = λu:* . λv:* . u Λ v
+          K = λu:* . λv:* . λx:u . λy:v . x
+    Then |- AND : (* -> * -> *)
+    and  |- K : (Πu:* . Πv:* . u -> v -> u)
+
+    R13.31 λP2 is λ2 + λP. Informally corresponds to second order predicate logic.
+        u : *, p : u -> * |- (λx:u . px -> ⊥) : (u -> *)
+
+    R13.32 λPω_ is λP + λω_.
+        u : * |- (λp:u->u->* . λx:u . pxx) : ((u -> u -> *) -> (u -> *))
+    and u : * |- ((u -> u -> *) -> (u -> *)) : ■.
+    
+    R13.33 λC is the calculus of constructions: higher-order intuitionistic logic (basis of Coq).
+    |- (λu:* . λp:(u -> *) . λx:u . x -> ⊥) : (Πu:* . (u -> *) -> (u -> *))
+    and |- (Πu:* . (u -> *) -> (u -> *)) : ■.
+    Can also do universal quantification
+        ALL = (λu:* . λp:(u->*) . Πx:u . px)
+    then
+        A : *, P : A -> * |- ALLAP : *
+        ALLAP =β (Πx:A . Px)
+    
+
+    λ-cube systems can be generalised to pure type systems.
+    D13.34 (Pure Type Systems) PTSs are done by modifying D13.32 to allow arbitrary consts (diff from others) as sorts, a set of axioms s1 : s2; and to give rules the form (s1,s2,s3) and to make the product rule
+        Γ |- A : s1   Γ, x : A |- B : s2    condition: x \notin FV(Γ,A); (s1,s2,s3) \in R
+              Γ |- (Πx:A . B) : s3
+    (s1,s2) => (s1,s2,s2)
+    The PTS is determined by S, A, R.
+
+    E13.35 Luo's Extended Calculus of Constructions ECC
+        S = {*} \union {■n : n ≥ 0}
+        A = {* : ■0} \union {■n : ■(n+1) : n ≥ 0}
+        R = {(*,*,*),(*,*,■n),(■n,*,*),(■n,*,■m) : 0 ≤ n ≤ m}
+            \union {(*,■n,■m : n ≤ m)
+            \union {(■n,■m,■r) : 0 ≤ m,n ≤ r}
+
+F. Normalisation in PTSs
+    D13.36 Pseudocontext is Γ = x1 : A1, ..., xn : An
+    where xi are distinct. It is legal iff \exists pseudoterms M, A s.t. Γ |- M : A.
+
+    D13.38 Δ = u1 : B1, ..., um : Bm be a pseudocontext, m > 1. Then Γ |- Δ means all are derivable.
+
+    L13.39 (Restricted Weakening) If Γ |- M : A, can assume only applications of (weakening) are
+        Γ |- a : B   Γ |- B : s
+           Γ, x : B |- a : B
+    where s is sort, a is var/const.
+
+    L13.40 (Free Variable Lemma) Γ = x1 : A1, ..., xn : An; suppose Γ |- M : A. Then
+        (i) FV(M,A) \subseteq {xi}
+        (ii) forall i, FV(Ai) \subseteq {x1,...,x(i-1)}
+
+    L13.42 (Start Lemma) Γ = ... is legal for a PTS w axiomset A. Then
+        (i) Γ |- s1 : s2 forall (s1,s2) \in A
+        (ii) forall i, Γ |- xi : Ai.
+
+    L13.42 (Transitivity Lemma) Γ, Δ are pseudocontexts; if Γ |- Δ and Δ |- Μ : A, then
+        Γ |- Μ : A.
+    
+    L13.43 (Substitution Lemma) If Γ and Δ are pseudocontexts w no common subjects, x \notin FV(Γ) and x \notin Δ, and
+        Γ, x : A, Δ |- M : B and Γ |- Ν : A,
+    then
+        Γ, [N/x]Δ |- [N/x]M : [N/x]B.
+
+    L13.44 (Thinning Lemma) if Γ, Δ legal, and Γ \subseteq Δ and Γ |- M : A, then Δ |- Μ : A.
+
+    L13.45 (Generation Lemma)
+        (i) Γ |- s : C => \exists s' =β C s.t. s : s' \in A
+        (ii) Γ |- x : C => \exists s, B =β C s.t. Γ |- B : s, (x : B) \in Γ.
+        (iii) Γ |- (Πx:A . B) : C => \exists (s1,s2,s3) \in R s.t.
+                Γ |- Α : s1; Γ, x : A |- B : s2; C =β s3
+        (iv) Γ |- (λx:A . M) : C => \exists s, B s.t.
+                Γ |- (Πx:A . B) : s
+                Γ, x : A |- M : B
+                C =β (Πx:A . B)
+        (v) Γ |- MN : C => \exists A, B s.t.
+                Γ |- M : (Πx:A . B)
+                Γ |- N : A
+                C =β [N/x]B
+
+    L13.47 (Correctness of Types) Γ |- M : A => \exists s s.t. s =β A or Γ |- A : s
+
+    L13.48 Γ |- M : (Πx:B1 . B2) => \exists s1, s2 s.t. Γ |- B1 : s1 & Γ, x : B1 |- B2 : s2.
+
+    L13.49 Γ |- Α : B or Γ |- B : A =>
+        (i) \exists s =β A, or
+        (ii) \exists s s.t. Γ |- A : s, or
+        (iii) \exists s, C s.t. Γ |- Α : C, Γ |- C : s.
+
+    D13.50 A pseuodterm A is legal if \exists Γ, B s.t. Γ |- Α : B or Γ |- B : A.
+
+    L13.51 (Subterm Lemma) All subterms of legal terms are legal.
+
+    T13.52 (Subject-Reduction Theorem) If Γ |- M : A & M >β Μ', then Γ |- Μ' : A.
+    C13.52.1 Same for A >β A'.
+
+    L13.53 (Strengthening Lemma) Γ, x : A, Δ is a pseudocontext |- M : B and x \notin FV(Δ or M or B), then
+        Γ, Δ |- M : B
+    C13.53.1 If PTS has finite sorts, and every legal term is normalising, type-checking & typability are decidable.
+
+    D13.54 PTS given by S, A, R is singly sorted iff
+        (i) (s1,s2), (s1,s2') \in A => s2 = s2'
+        (ii) (s1,s2,s3), (s1,s2,s3') \in R => s3 = s3'
+
+    L13.56 (Unicity of Types) In a SS PTS, Γ |- Μ : A and Γ |- M : A' => A = A'.
+
+    L13.57 (Strong Permutation Lemma) If Γ, x : A, y : B is a pseudocontext |- M : C, and x \notin FV(B), then
+        Γ, y : B, x : A |- M : C
+
+    D13.58 (Topsort) s is a topsort iff \nexists s' s.t. (s,s') \in A.
+
+    L13.59 (Topsort Lemma) s is a topsort and Γ |- A : s => A is not A1A2 or λx:A1 . A2.
+    
+    T13.60 (SN Theorem for the λ-cube) For those 8
+        (i) Γ |- Μ : A => M, A are SN
+        (ii) x1 : A1, ..., xn : An |- M : B => Ai, M, B are SN
+
+    R13.61 Holds for ECC also.
+
+    R13.62 Proof of T13.60 can follow T11.56 and T12.33 (reducing deductions ) if we define RD as
+        Γ, x : A |- M : B   Γ |- (Πx:A . B) : s
+             Γ |- (λx:A . M) : (Πx:A . B)
+             Γ |- (λx:A . M) : (Πx:C . D)       Γ |- N : C
+                       Γ |- (λx:A . M)N : [N/x]D
+    to
+                             Γ |- N : C
+        Γ, x : A |- M : B    Γ |- Ν : A
+             Γ |- [N/x]M : [N/x]B
+             Γ |- [N/x]M : [N/x]D
+    Every deducc can be SN wrt this.
+
+    W13.63 (βη-conversion) If η-reductions were allowed in a PTS, Church-Rosser would fail. E.g.,
+        λx:y . (λx:z . x)x
+    then     λx:y . (λx:z . x)x >β λx:y . x
+    but also λx:y . (λx:z . x)x >η λx:z . x
+    Both of which are distinct and irreducible nfs.
+
+G. Propositions-as-Types
+    Intuitionistic logic not classical
+    M : A is M has type A
+          or M is a proof of A
+    Applies to λ2, λP2, λω, λC
+
+    D13.64 F is defined as F = λu:* . λv:* . (Πx:u . v)
+    FAB = A -> B
+
+    Can show that in all those,
+        Γ |- A : *   Γ |- B : *
+           Γ |- (A -> B) : *
+    and
+        Γ |- Μ : A -> B   Γ |- N : A
+               Γ |- ΜΝ : B,
+
+    and if x \notin FV(B)
+        Γ, x : A |- M : B   Γ |- Α -> Β : *
+             Γ |- (λx:A . M ) : A -> B
+
+    D13.65 The conjunction proposition operator etc are
+        (a) Λ = λu:* . λv:* . (Πw:* . (u -> v -> w) -> w)
+        (b) D = λu:* . λv:* . λx:u . λy:v . λw:* . λz:(u -> v -> w) . zxy
+        (c) fst = λu:* . λv:* . λx:(Λuv) . xu(λy:u . λz:v . y)
+        (d) snd = λu:* . λv:* . λx:(Λuv) . xv(λy:u . λz:v . z)
+
+    Can prove
+        u : *, v : * |- Duv : u -> v -> (u Λ v)
+        u : *, v : * |- fstuv : (u Λ v) -> u
+        u : *, v : * |- snduv : (u Λ v) -> v
+
+    and u : *, v : *, x : u, y : v |- fstuv(Duvxy) : u
+        u : *, v : *, x : u, y : v |- snduv(Duvxy) : v
+    
+    fstuv(Duvxy) =β x; snduv(Duvxy) =β y.
+
+    D13.66 The disjunction proposition operator etc are
+        (a) V = λu:* . λv:* . (Πw:* . (u -> w) -> ((v -> w) -> w))
+        (b) inl = λu:* . λv:* . λx:u . λw:* . λf:(u -> w) . λg:(v -> w) . fx
+        (c) inr = λu:* . λv:* . λx:u . λw:* . λf:(u -> w) . λg:(v -> w) . gx
+        (d) case = λu:* . λv:* . λz:(Vuv) . λw:* . λf:(u -> w) . λg:(v -> w) . zwfg
+    
+   Can prove
+        u : *, v : * |- inluv : u -> u V v
+        u : *, v : * |- inruv : v -> u V v
+        u : *, v : * |- caseuv : u V v -> (Πw:*)((u -> w) -> ((v -> w) -> w))
+
+    and u : *, v : *, w : *, x : u, y : v, f : u -> w, g : v -> w |- caseuv(inluvx)wfg : w
+        u : *, v : *, w : *, x : u, y : v, f : u -> w, g : v -> w |- caseuv(inruvy)wfg : w
+
+    caseuv(inluvx)wfg =β fx
+    caseuv(inruvy)wfg =β gy
+
+    D13.67 void = ⊥ = (Πu:* . u)
+
+    Can prove
+        |- ⊥ : *
+    and x : ⊥, u : * |- xu : u
+
+    If there is a closed term in ⊥, then every proposition is provable.
+
+    T13.68 (Consistency) In those 8, no M s.t. |- M : ⊥.
+    P. If there is, then
+        |- M : ⊥   u : * |- u : *
+             u : * |- Mu : u
+       Let N be Mu's nf. N is not λx:A . P, so it's aN1...Nn, and
+             u : * |- a : (Πy1:A1 . ... . Πyn:An . *)
+       and forall i, u : * |- Ni : Ai
+       If a is a const, that should be an axiom, but no
+                 var, it must be u, so n = 0, N = u; but u : u is false.
+
+    R13.69 Applies to PTSs for which T13.60 holds.
+
+    D13.70 The negation proposition operator is
+        ¬ = λx:* . x -> ⊥
+     
+    Can show that if Γ |- Α : *, then
+        Γ |- M : ¬A   Γ |- N : A
+              Γ |- MN : ⊥
+    and
+        Γ, x : A |- M : ⊥   Γ |- ¬A : *
+             Γ |- (λx:A . M) : ¬A
+    
+    D13.71 The existential quantifier operator etc are
+        (a) Σ = λu:* . λv:(u -> *) . (Πw:* . (Πx:u . vx -> w) -> w)
+        (b) D' = λu:* . λx:(u -> *) . λx:u . λy:vx . λw:* . λz:(Πx:u . vx -> w) . zxy
+        (c) proj = λu:* . λv:(u -> *) . λw:* . λz:(Πx:u . vx -> w) . λy:(Πx:u . vx) . ywz
+    
+    Can prove
+        u : *, v : u -> * |- (3x:u . vx) : *
+        u : *, v : u -> * |- D'uv : (Πt:u . vt -> (3x:u . vx))
+    and
+        u : *, v : u -> * |- projuv : (Πw:* . (Πy:u . vy -> w) -> (3x:u . vx) -> w)
+
+    u : *, v : u -> *, w : *, x : u, y : vx, z : (Πx:u . vx -> w) |- projuvwz(D'uvxy) : w
+
+    and projuvwz(D'uvxy) =β zxy
+
+    Can't do right projection for D' but left is
+        fst' = λu:* . λv:(u -> *) . λx:(Σuv) . xu(λy:u . λz:v . y)
+
+    D13.72 The equality proposition
+        M =A N
+    is defined to be
+        QAMN
+    where
+        Q = λu:* . λx:u . λy:u . (Πz:(u -> *) . zx -> zy).
+    
+    Only to be used when A : * is proved.
+    Can show
+        |- Q : (Πu:* . u -> u -> *)
+        u : *, x : u |- (λz:(u -> *) . (λw:zx . w)) : x =u x
+    and 
+        u : *, x : u, y : u, m : (x =u y), z : u -> *, n : zx |- mzn : zy
+
+    So reflexivity and substitution.
+
+    D13.73 (Basic Arithmetic Operators) Natural-numbers type and basic arithmetical operators are defined as
+        (a) N = (Πu:* . (u -> u) -> (u -> u))
+        (b) 0 = λu:* . λx:u->u . λy:u . y
+        (c) σ = λv:N . λu:* . λx:u->u . λy:u . x(vuxy)
+        (d) π = λu:N . snd N N (u (N x N) Q (D N N 0 0)),
+                where Q = λv:(NxN) . D N N (σ (fst N Nv))(fst N Nv)
+        (e) R = λu:* . λx:u . λy:N->u->u . λz:N . z(N -> u)P(λw:N . x)z,
+                where P = λv:N->u . λw:N . y(πw)(v(πw))
+
+    n = σ^n0 = σ(σ(...(σ0)...))
+
+    Can show
+        |- 0 : N
+        |- σ : N -> N
+        |- π : N -> N
+    and
+        |- R : (Πu:* . u -> (N -> u -> u) -> N -> u)
+    
+    n =β λu:* . λx:u->u . λy:u . x^ny
+    π0 =β 0
+    π(σn) =β n
+
+    RAMN0 =β M
+    RAMN(σn) =β Nn(RAMNn)
+    forall A : *, M : A, N : N -> A -> A.
+    also |- N : *.
+
+    Above enough for PRFs.
+    But not all Peano axioms.
+    Four are ok (+ and x).
+    rest:
+        (i) Peano1 = (Πn:N . ¬(σn =N 0))
+        (ii) Peano2 = (Πm:N . Πn:N . (σm =N σn -> m =N n))
+        (iii) Peano3 = (Πu:N->* . (Πm:N . um -> u(σm)) -> u0 -> (Πn:N . un))
+
+    and Peano3 cannot be derived. Because there is a term
+        λA:* . λx:A->A . x
+    of type N which is not a natural number.
+
+    So we need a predicate that says "is a nat"
+        N = λn:N . (Πu:N->*)((Πm:N . um -> u(σm)) -> u0 -> un)
+
+    Can prove
+        |- N : N -> *
+        |- M : N0
+        |- N : (Πn:N . Νn -> N(σn))
+    for suitable closed terms M, N.
+    For induction
+        |- P : (Πu:N -> * . (Πm:N . um -> u(σm)) -> u0 -> (Πn:N . Νn -> un))
+
+    L13.74 In λ2 \exists closed term Q s.t.
+        |- Q : (Πn:N . Νn -> π(σn) =Ν n)
+    P. π(σ0) =β 0 is easy.
+       we see that π(σ(σn)) =β σ(π(σn))
+       so \exists Q1 s.t.
+        n : N, x : (π(σn) =N n) |- Q1 : (π(σ(σn)) =N σn)
+       so \exists Q2 s.t.
+        |- Q2 : (Πn:N . (π(σn)) =N n) -> (π(σ(σn)) =N σn)
+       QED.
+
+    L13.75 In λ2 \exists closed term R s.t.
+        |- R : (Πn:N . Πm:N . Νn -> Nm -> (σn =N σm) -> (n =N m))
+    P. If σn =N σm, then π(σn) = π(σm), and so n =Ν m. Can be formalised.
+
+    So for the postulates, enough to add assumption x : Peano1, for a new atomic const c.
+
+    Can be made classical logic by adding unproved assumption
+        cl : (Πu:* . ¬¬u -> u)
+
+    Addition of the former or both to a certain kind of consistent context keeps it consistent.
+
+H. PTSs with Equality
+    Conversion of types is allowed but not terms.
+
+    (conversion') Γ |- M : A   M =β N
+                      Γ |- Ν : A
+
+    which makes (α-conv) and the third premise of (conversion) redundant, so replace latter with
+    (conversion'')      Γ |- M : A   A =β B
+                            Γ |- M : B
+    
+    D13.76 For every PTS S, the corresponding S= is defined by deleting (α-conv), adding (conversion'), and replacing (conversion) by (conversion'').
+
+    (conversion')-postponement proof has troublesome cases, like
+                      Γ |- C : s   C =β (Πx:A . B)
+    Γ, x : A |- M : B     Γ |- (Πx:A . B) : s
+          Γ |- (λx:A . M) : (Πx:A . B)
+    so ditch it.
+
+    Also, type-checking algorithms don't exist.
+
+    But better for representing systems of logic (PaT) and the idea of subtypes.
+    A \subseteq B is expressed by
+        (λx:A . x) : A -> B
+    where (λx:A . x) is a coercion.
+    But to make formal inference, need (conversion')
+        Γ |- (λx:A . x) : A -> B   Γ |- M : A
+                Γ |- (λx:A . x)M : B
+                     Γ |- Μ : B
+
+    It follows that if Γ |- (λx:B . M) : B -> C, then for y \notin FV(M),
+        Γ |- (λy:A . (M((λx:A . x)y))) : A -> C
+    where (λy:A . (M((λx:A . x)y))) represents restriction of M to A. Can be β-reduced as
+        (λy:A . (M((λx:A . x)y))) >β (λy:A . My)
+    so (λy:A . My) also represents that.
+
+    R13.77 That's an η-redex, but W13.63, so no βη-reduction. Above shows that if we find a solution (to failure of CR), and adopt βη-reduction for PTSs with subtyping, we'd get systems that can't distinguish functions from their restrictions.
+
+14. Models of CL
+A. Applicative Structures
+    a, b, c, d, e are arbitrary members of D
+    • is a left-associative mapping from D^2 to D.
+    A mapping ρ from Vars to D is a "valuation".
+        [d/x]ρ is for ρ* which is the same except that ρ*(x) = d.
+
+    D14.2 An applicative structure is a pair <D,•>, where D is a set (domain) w ≥ 2 members and • is any mapping from D^2 to D.
+
+    A model of a theory (CLw or λβ) is an AS with extra features.
+
+    D14.3 Let <D,•> be an AS, n ≥ 1. θ: D^n -> D is representable in D iff \exists a \in D s.t.
+        forall di \in D, a•d1•...•dn = θ(d1,...,dn)
+
+    Each such a is a representative of θ.
+    The set of all representable functions from D^n to D is (D^n -> D)_rep.
+
+
+    D14.4 forall a \in D, Fun(a) is the unique unary fn represented by a:
+        forall d \in D Fun(a)(d) = a • d.
+
+    For all unary fns θ \in (D -> D)_rep, the set of θ's reps in D is Reps(θ).
+
+    D14.5 Forall a, b \in D, a is extensionally equivalent to b (a ~ b) iff
+        forall d \in D   a • d = b • d
+    
+    For every a \in D, the extensional-equivalence-class containing a is a~ = {b \in D : b ~ a}
+    and the set of these classes is D/~
+        D/~ = {a~ : a \in D}
+
+    L14.6 Let <D,•> be an AS. Then
+        (a) a ~ b <=> Fun(a) = Fun(b)
+        (b) a ~ b <=> a~ = b~
+        (c) D/~  is a partition of D
+        (d) Reps is a bijection from (D -> D)_rep to D/~
+
+    D14.7 (Extensionality) An AS <D,•> is extensional iff forall a, b \in D
+        ((forall d \in D) a • d = b • d) => a = b
+
+    L14.8 Extensionality is equivalent to any one of
+        (a) (forall a, b \in D) a ~ b => a = b
+        (b) (forall a \in D) a~ is singleton.
+        (c) (forall θ \in (D -> D)_rep) Reps(θ) is singleton.
+        (d) Fun is a bijection from D to (D -> D)_rep.
+
+B. Combinatory Algebras
+    D14.9 A combinatory algebra is a pair _D = <D,•> where D has ≥ 2 members, • maps D^2 to D and k, s \in D s.t.
+        (a) (forall a, b \in D) k•a•b = a
+        (b) (forall a, b, c \in D) s•a•b•c = a•c•(b•c)
+    A model of CLw is a quintuple <D,•,i,k,s> s.t. <D,•> is a CA and i = s•k•k.
+
+    D14.11 (Interpretation of a Term) Let _D = <D,•,i,k,s>, where <D,•> is an AS and i, k, s \in D. Let ρ be a valuation.
+    Using ρ, assign to every term X a member of D called its interpretation [X]^D_ρ:
+        (a) [x]^D_ρ = ρ(x)
+        (b) [I]^D_ρ = i; [K]^D_ρ = k; [S]^D_ρ = s
+        (c) [XY]^D_ρ = [X]^D_ρ • [Y]^D_ρ.
+    Superscript and subscript could be omitted.
+
+    E.g. a, b \in D
+    ρ(x) = a, ρ(y) = b
+    [Sx(yK)]^D_ρ = s • a • (b • k) \in D
+
+    L14.21 If ρ(x) = σ(x) for all x \in FV(X), then [X]_ρ = [X]_σ.
+    C14.12.1 The interpretation of closed terms is independent of ρ.
+
+    L14.13 Interpretation commutes w substitution
+        [[Z/x]X]_ρ = [X]_([b/x]ρ), where b = [Z]_ρ
+    
+    D14.14 (Satisfaction) Let _D = <D,•,i,k,s> where <D,•> is an AS, i, k, s \in D, ρ be a valuation.
+    |= (satisfies) defined as
+        _D, ρ |= X = Y <=> [X]^D_ρ = [Y]^D_ρ
+        _D    |= X = Y <=> (forall ρ) (_D, ρ |= X = Y)
+
+    D14.15 A model of CLβax is a model <D,•,i,k,s> of CLw that satisfies those axioms.
+
+    D14.16 A model of CLext_ax ...
+
+    L14.17 Each model of CLw, CLβax, CLext_ax satisfies all provable equations of the theories.
+
+    R14.18 Clw is not exact 1st-order, but it can be made into CLw+ without changing provable equations. Models are also same.
+    Same for CLβax and CLext_ax.
+
+    R14.19 Now make model. CLw+ is consistent and every consistent 1st-order theory has a model.
+
+    D14.20 (Term Models) Let T be CLw or CLβax or CLext_ax. For each CL-term X, let
+        [X] = {Y : T |- X = Y}
+    The term model of T (TM(T)) is <D,•,i,k,s>, where
+        D = {[X] : X is a CL-term}
+        [X]•[Y] = [XY]
+        i = [I]; k = [K]; s = [S]
+
+    R14.21 • is well-defined and TM(T) is a model of T.
+
+    Interpretation is the same as substitution.
+    If FV(X) = {x1,...,xn} and ρ(xi) = [Yi] forall i, then
+        [X]_ρ = [[Y1/x1,...,Yn/xn]X]
+
+    This TM(T) is kinda trivial.
+
+    T14.23 (Submodel Theorem) Let T be any of the CLs. If <D,•,i,k,s> is a model of T and D' \subseteq D containing i, k, s and closed under •, then <D',•,i,k,s> is a model of T.
+
+    D14.24 (Interiors) Let T be any of the CLs and _D = <D,•,i,k,s> be a model. The interior of _D is _Dº = <Dº,•,i,k,s> where
+        Dº = {[X] : X closed}.
+    The interior of a model of T is also a model of T.
+
+    R14.25 Every extensional model of CLw is a model of CLext_ax, but not the converse. Counter: (TM(CLext_ax))º is a model of it, but for extensionality, forall closed X, Y
+            ((forall closed Z) [XZ] = [YZ]) => [X] = [Y]
+         => ((forall closed Z) CLext_ax |- XZ = YZ) => (CLext_ax X = Y)
+ so
+        ((forall closed λ-terms Q) X_λQ =λext Y_λQ) => X_λ =λext Y_λ
+    which is wrong by R7.3
+    
+    R14.26 Combinatory algebra is only different from model of CLw in that the latter is tied to a particular formalisation (SKI).
+    Let's rewrite without k, s.
+
+    D14.27 A combination of x1,...,xn is any CL-term X whose atoms are only xi.
+    
+    If X is a combination of xi and ρ is any valuation, we can interpret X in the normal way.
+
+    D14.28 An AS _D = <D,•> is combinatorially complete iff
+        forall vars-sequences u,x1,...,xn
+               combinations X of xi
+        (3u)(forall x1,...,xn)(ux1...xn = X)
+        is true in _D.
+    i.e. iff \exists a \in D s.t. forall d1,...,dn,
+        a•d1•...•dn = [X]_([d1/x1]...[dn/xn]ρ)
+
+    T14.29 An AS is combinatorially complete iff it is a combinatory algebra.
+    P. existence of k, s => combinatory completeness just like [x].M was constructed in 2.18.
+    converse is a special case.
+
+    But the other formulation is nicer.
+
+15. Models of λ-Calculus
+A. The Definition of λ-Model
+    bound variables and rule (ξ) make it hard.
+    ID on S = I_S
+    composition φ . ψ is as usual.
+    If φ : S -> S' and ψ : S' -> S and
+        (a) ψ . φ = Ι_S
+    then ψ is a left inverse of φ, S is a retract of S' by φ, ψ, and <φ,ψ> is a retraction.
+    Following are together equivt to (a):
+        (b) (φ . ψ) . (φ . ψ) = φ . ψ
+        (c) ψ is onto
+        (d) φ is one-one
+
+    R15.2 Not same as CLβax because of (ξ)
+
+    D15.3 (λ-models) A λ-model or model of λβ is a triple _D = <D,•,[]>, where <D,•> is an AS and [] is a mapping which which assigns a member of D to each λ-term and each valuation ρ.
+        (a) [x]_ρ = ρ(x)
+        (b) [PQ]_ρ = [P]_ρ • [Q]_ρ
+        (c) [λx.P]_ρ • d = [P]_([d/x]ρ) forall d \in D
+        (d) [M]_ρ = [M]_σ               if ρ(x) = σ(x) forall x \in FV(M)
+        (e) [λx.M]_ρ = [λy.[y/x]M]_ρ    if y \notin FV(M)
+        (f) ((forall d \in D) [P]_([d/x]ρ) = [Q]_([d/x]ρ))
+            => [λx.P]_ρ = [λx.Q]_ρ
+
+    C15.4 (a) and (b) are definition of [M]_ρ for var & app cases.
+          abs case needs (c)-(f):
+                (c) is functional intuition
+                (d) std in model theory
+                (e) indept of changes of bound vars
+                (f) interpretation of (ξ)
+
+    R15.5 (c) & (f) imply that
+        [λx.P]_ρ ~ [λx.Q]_ρ => [λx.P]_ρ = [λx.Q]_ρ
+    So [λx.P]_ρ have extensionality property; (f) is weak extensionality condition.
+
+    L15.6 Let _D = <D,•,[]> be a λ-model. If y \notin FV(M) and ρ(y) = ρ(x), then
+        [[y/x]M]_ρ = [M]_ρ
+    P. let d = ρ(y) = ρ(x). then
+        [M]_ρ = [M]_([d/x]ρ) = [λx.M]_ρ • d
+                             = [λy.[y/x]M]_ρ • d
+                             = [[y/x]M]_ρ
+    
+    L15.7 Let _D = <D,•,[]> be a λ-model and FV(M) \subseteq x1,...,xn and y1,...,yn,xi be distinct. If ρ and σ with are s.t. σ(yi) = ρ(xi) forall i, then
+        [[y1/x1]...[yn/xn]M]_σ = [M]_ρ
+
+    L15.8 (Berry's Extensionality Property) _D = <D,•,[]> is a λ-model. Then forall P, Q, ρ, σ, x, y, 
+        (a) ((forall d \in D) [P]_([d/x]ρ) = [Q]_([d/y]σ))
+            => [λx.P]_ρ = [λy.Q]_σ
+     ~= (b) [λx.P]_ρ ~ [λy.Q]_σ => [λx.P]_ρ = [λx.Q]_σ
+
+    L15.10 _D = <D,•,[]> is a λ-model. Then forall M, N, x, ρ,
+        (a) [[N/x]M]_ρ = [M]_([b/x]ρ) where b = [N]_ρ
+        (b) [(λx.M)N]_ρ = [[N/x]M]_ρ
+
+    D15.11 _D = ... ρ, M, N as usual.
+    If [M]_ρ = [N]_ρ, we say D, ρ |= M = N
+    If that for all ρ, then D |= M = N.
+
+    T15.12 Every λ-model satisfies all the provable eqs of λβ.
+    C15.12.1 <D,•> is a combinatory algebra & is combinatorially complete.
+    C15.12.2 <D,•,i,k,s> is a model of CLβax where k and s are same and i = [λx.x]
+
+    R15.13 Converses are false.
+
+    D15.14 (Models of λβη) A model of λβη is a λ-model that satisfies λx.X = M for all M, x \notin FV(M).
+
+    T15.15 _D is extensional iff it is a model of λβη.
+
+    D15.16 (Term Models) Let T be either λβ or λβη. Forall M, let
+        [M] = {N : T |- M = N}
+    The term model of T (TM(T)) is defined as <D,•,[]> where
+        D = {[M] : M is λ-term}
+        [P] • [Q] = [PQ]
+        [M]_ρ = [[N1/x1],...,[Nn/xn]M]
+    where FV(M) = {x1,...,xn} and ρ(xi) = [Ni] and [N1/x1,...,Nn/xn] is simultaneous subst.
+
+    R15.17 •, [] are well-def and TM(T) is a legit model.
+
+B. Syntax-Free Definition
+    D15.18 (The Mapping Λ) If _D = <D,•,[]> is a λ-model, we have the ~ relation.
+        a~ = {b \in D : b ~ a}
+    is the extensional-equivalence class a~.
+
+    For each a \in D, \exists M, x, ρ, s.t. [λx.M]_ρ \in a~.
+    Whichever M, x, ρ it is, [λx.M]_ρ is same. This is Λ(a).
+        Λ(a) = [λx.ux]_([a/u]σ) for any σ
+
+    (i) Λ(a) ~ a
+    (ii) Λ(a) ~ Λ(b) => Λ(a) = Λ(b)
+    (iii) a ~ b <=> Λ(a) = Λ(b)
+    (iv) Λ(Λ(a)) = Λ(a)
+    (v) \exists e s.t. e • a = Λ(a) forall a \in D (representable)
+    e.g. e = [1_Ch]
+
+    D15.19 (Syntax-Free λ-models) A syntax-free λ-model is a triple <D,•,Λ> where <D,•> is an AS, Λ: D -> D, and
+        (a) <D,•> is combinatorially complete
+        (b) (forall a \in D) Λ(a) ~ a
+        (c) (forall a, b \in D) a ~ b => Λ(a) = Λ(b)
+        (d) (3e \in D)(forall a \in D) e • a = Λ(a)
+    
+    T15.20 <D,•,Λ> is syntax-free λ-model iff <D,•,[]> is a λ-model. Here [] is defined as
+        (a) [x]_ρ = ρ(x)
+        (b) [PQ]_ρ = [P]_ρ • [Q]_ρ
+        (c) [λx.P]_ρ = Λ(a), where (forall d \in D)(a • d = [P]_([d/x]ρ))
+    And Λ is defined as
+        (d) Λ(a) = [λx.ux]_([a/u]σ) for any σ.
+    C15.20.1 The constructions of [] and Λ are mutual inverses.
+
+    R15.21 Two given defs are equivt. D15.19 Independent of λ-syntax. Also finite set of 1st-order axioms.
+    But this is even simpler.
+
+    D15.22 (Scott-Meyer λ-models) A loose Scott-Meyer λ-model is a triple <D,•,e> where <D,•> is an AS, e \in D, and
+        (a) <D,•> is combinatorially complete.
+        (b) (forall a, b \in D) (e • a • b = a • b)
+        (c) (forall a, b \in D) ((forall d \in D)(a • d = b • d)
+                                 => e • a = e • b)
+    A strict Scott-Meyer λ-model also has
+        (d) e • e = e
+
+    D15.23 Take <D,•,e> and define Λ = Fun(e). Then <D,•,Λ> is a SF λ-model. Conversely, given <D,•,Λ>, if e \in Reps(Λ), then <D,•,e> is a loose SM model.
+    Many of the models given by various e are there, only one is struct. To find it, let e0 = [1_Ch]
+    It represents λ and satisfies the stuff. No other does.
+
+    T15.24 Λ = Fun(e) and e0 = [1_Ch] are mutual inverses.
+
+    R15.25 The Scott-Meyer definition is simpler than the other two; like "combinatory algebra". All except (c) have same form.
+    But if no exception, then ~submodel theorem, and interior would be model, but not true.
+
+C. General Properties of λ-models
+    Rep(θ) = Λ(a) for any a \in Reps(θ) ["canonical" rep]
+
+    Fun(Rep(θ)) = θ.
+
+    Fun is a left inverse of Rep, so Rep is 1-1 and (D->D)_rep is a retract of D.
+
+    We can reverse and define application in terms of representability.
+    D is a set, S a set of unaries D->D.
+    Let Rep: S -> D, Fun: D -> S form a retraction.
+        Fun . Rep = I_S
+    Define application as (forall a, b \in D)
+        a • b = (Fun(a))(b)
+    S becomes set of all representable fns in <D,•>. Then
+        Λ = Rep . Fun
+    which satisfies (b) and (c) in D15.19.
+        (i) D has ≥ 2 members.
+        (ii) <D,•> is combinatorially complete if • is defined as above.
+        (iii) Rep . Fun \in S
+
+    D15.27 Category theory formulation.
+
+    R15.28 (The Set F) If <D,•,Λ> is a SF model, the range of Λ is called F. F has exactly one member in each equiv class in D.
+    And corresponds 1-1 with (D -> D)_rep. An alternative characterisation
+        (a) F = {d \in D : (3M,x,ρ)(d = [λx.M]_ρ)
+    
+    R15.29 (Combinatory Algebas and λ-model) If we have <D,•>, how many <D,•,Λ> is a λ-model.
+        (a) could be none
+        (b) could be one; <D,•> is "lambda-categorical"
+        (c) could be > 1.
+
+    T15.30 Every <D,•> can be made into a <D,•,Λ> in exactly one way. Let Λ(a) = a forall a \in D. <D,•,Λ> is a model of λβη.
+
+    R15.31 Extending definition of [] from CL to λ.
+    Find s, k, i \in D satisfying that and define [] usually.
+    [] for λ-terms through H-transformation:
+        [M]_ρ = [M_H]_ρ
+
+    S15.32 Five classes of models
+        CLw(bar): combinatory algebras (14.9)
+        CLβax(bar): models of CLβax
+        CLext_ax(bar): models of CLext_ax
+        λβ(bar): λ-models as defined in 15.3 (or SF or SM)
+        λβη(bar): extensional combinatory algebras
+
+    By 15.30, λβη(bar) \subseteq λβ(bar), in the sense it can be converted, by adding Λ οr []. Similarly
+        (i) λβη \subseteq CLext_ax \subseteq CLβax \subseteq CLw
+        (ii) λβη \subseteq λβ \subseteq CLβax
+
+    All inclusions except (i)(2) are proper.
+
+16. Scott's D∞ and Other Models
+A. Introduction: Complete Partial Orders
+    D∞ is a model of both CLw and λβ & is extensional.
+    NB: U means supremum
+
+    if ψ(d) = φ(a1,...,an,d) forall d \in D
+    we write it as λλd \in D . φ(a1,...,an,d)
+    Note that λλd \in D . φ(d) = φ
+
+    D16.2 (Partially Ordered Sets) A partially ordered set is a pair <D,≤> where D is a set and ≤ a binary reln on it that is transitive, anti-symmetric and reflexive.
+    The least member of D is ⊥:
+        (forall d \in D) ⊥ ≤ d.
+
+    D16.3 (Least Upper Bounds) If <D,≤> is a partially ordered set and X \subseteq D, a UB of X is any b \in D s.t.
+        (a) (forall a \in X) a ≤ b
+    The LUB of X is UX; it is a UB b of X s.t.
+        (b) (forall c \in D) ((c is a UB of X) => b ≤ c)
+
+    E16.4 (a) if x, y are both UBs, then x ≤ y and y ≤ x => x = y
+    
+    D16.5 (Directed Sets) <D,≤> ... X \subseteq D is directed iff X ≠ ø and every pair of members of X has a UB in X:
+        (forall a, b \in X) (3c \in X) (a ≤ c and b ≤ c)
+
+    D16.6 (Complete Partial Orders, CPOs) A CPO is a POset <D,≤>s.t.
+        (a) D has a least member ⊥
+        (b) every directed subset X \subseteq D has an LUB UX.
+
+    Introduced ⊥ to represent undefinedness. For any partial function φ, define φ+ as
+        φ+(n) = φ(n) if defined, else ⊥
+        φ+(⊥) = ⊥
+
+    ψp is the constant function returning p s.t. ψp(⊥) = ⊥
+    ψp'                                          ψp'(⊥) = p
+    
+    D16.8 (The Set N+) N+ = N \union {⊥}. For all a, b \in N+,
+        a ≤ b <=> (a = ⊥ & b \in N) or a = b
+
+    L16.9 N+ is a CPO.
+    P. Only directed subsets are singletons and pairs {⊥,n}.
+
+B. Continuous Functions
+    D16.10 (Continuity) Let D, D' be CPOs and φ: D -> D'.
+    φ is monotonic iff
+        (a) a ≤ b => φ(a) ≤' φ(b)
+    φ is continuous iff for all directed X \subseteq D
+        (b) φ(UX) = U(φ(X))
+
+    D16.11 Continuity => monotonicity
+    Suppose φ is continuous and a ≤ b.
+    Let X = {a,b}; then b = UX.
+    φ(UX) = φ(b) = U(φ(X))
+                 = U(φ(a),φ(b))
+                 => φ(a) ≤' φ(b)
+
+    E16.12 φ+ are continuous. If the function is not continuous, then
+        χ(⊥) ≠ ⊥. Let χ(⊥) = p.
+    Now for directed subset X = {⊥,n}, UX = ⊥. So U{p,χ(n)} exists and is = p. So χ(n) = p, QED.
+
+    E16.13 X is directed and φ is monotonic. Given a pair of elements in φ(X), φ(a) and φ(b), we know that a ≤ b, so φ(a) ≤ φ(b), QED.
+
+    D' is a CPO and φ(X) is directed. Therefore φ(X) has an LUB.
+
+    D16.16 (The Function-Set [D -> D']) For CPOs D, D', define [D->D'] to be the set of all continuous functions from D to D'.
+    For φ,ψ \in [D->D'], define
+        φ ≤ ψ <=> (forall d \in D)(φ(d) ≤' ψ(d))
+
+    ≤ is a partial order, and
+        (a) φ1 ≤ φ2, d1 ≤ d2 => φ1(d1) ≤' φ2(d2)
+
+    [D->D'] has a least member,
+        (forall d \in D) ⊥(d) = ⊥'.
+
+    If D = D', I_D \in [D->D].
+        (forall d \in D) I_D(d) = d.
+
+    L16.18 If D and D' are CPOs, so is [D->D']. Also, for every directed set Y \subseteq [D->D'],
+        (forall d \in D) (UY)(d) = U{φ(d) : φ \in Y}
+    P. Let Y \subseteq [D->D'] be directed; let
+           Yd = {φ(d) : φ \in Y}
+       Yd is directed [a, b \in Yd => a = φ(d), b = ψ(d); \exists χ ≥ φ,ψ => χ(d) ≥ φ(d), ψ(d)] and Yd \subseteq D'.
+       So UYd exists.
+       Let ψ(d) = UYd forall d \in D. RTP that ψ = UY.
+       ψ is continuous:
+          ψ(UX) = U(Y(UX))
+                = U{φ(UX) : φ \in Y}
+                = U{U(φ(X)) : φ \in Y}
+                = U{φ(a) : a \in X, φ \in Y}
+                = U{UYa : a \in X}
+                = U{ψ(a) : a \in X} = U(ψ(X))
+       So ψ \in [D->D'].
+       ψ is a UB of Y because ψ(d) = UYd forall d \in D.
+       it's an LUB of Y because ψ(d) is an LUB of Yd.
+
+    L16.19 (Composition) Continuity is invariant under composition.
+
+    D16.20 (Isomorphism) D and D' are CPOs; D is isomorphic to D' [D ~= D'] iff \exists φ \in [D->D'], ψ \in [D'->D] s.t.
+        ψ . φ = I_D and φ . ψ = I_D'
+
+    D16.21 (Projections) D and D' are CPOs; a projection from D' to D is a pair <φ,ψ> (as above) s.t.
+        ψ . φ = I_D and φ . ψ ≥ I_D
+    Makes D isomorphic to φ(D).
+
+C. The Construction of D∞
+    D16.22 (The Sequence D0, D1, ...) D0 = N+ and
+        D(n+1) = [Dn->Dn]
+    Every Dn is a CPO.
+
+    D16.23 No function can be applied to itself, so D∞ is not a a set of functions.
+    So let D∞ be an inf seq of fns!
+
+    D16.24 (The Initial Maps) Embed D0 into D1 by φ0 and a reverse map ψ0:
+        (a) \forall d \in D0, φ0(d) = λλa \in D0 . d
+        (b) \forall g \in D1, ψ0(g) = g(⊥0).
+
+    So φ0 \in [D0->D1] and ψ0 \in [D1->D0].
+
+    L16.25 <φ0,ψ0> is a projection from D1 to D0.
+    P. (a) Both are continuous. Constant obv, other one also obv.
+       (b) ψ0 . φ0 = Ι_D0 yup
+       (c) φ0 . ψ0 ≤ I_D1 yup because of ⊥0 and continuous.
+    
+    D16.26 We gon make that to <φn,ψn> forall n.
+
+    D16.27 (Maps between Dn and D(n+1)) Forall n ≥ 0, we define:
+        n = 0: φ0, ψ0 as above
+        n ≥ 1: φn(f) = φ(n-1) . f . ψ(n-1)
+               ψn(g) = ψ(n-1) . g . φ(n-1)
+
+    L16.28 <φn,ψn> is a projection from D(n+1) to Dn.
+    P. Induction. Base case is L16.25.
+       So let n ≥ 1.
+       (a1) φn \in (Dn->D(n+1)) & ψn \in (D(n+1)->Dn)
+            obv
+       (a2) both continuous
+            Let X \subseteq Dn be directed; φn is monotonic so U(φn(X)) exists.
+            so φn(UX)(b) = φ(n-1)((UX)(ψ(n-1)(b)))
+                         = φ(n-1)(U{f(ψ(n-1)(b)) : f \in X})
+                         = U{φ(n-1)(f(ψ(n-1)(b))) : f \in X}
+                         = U{φn(f)(b) : f \in X}
+                         = (U(φn(X)))(b)
+        (b) ψn . φn = I_D
+            ψn(φn(f))(a) = ψ(n-1)(φn(f)(φ(n-1)(a)))
+                         = ψ(n-1)(φ(n-1)(f(ψ(n-1)(φ(n-1)(a)))))
+                         = f(a)
+        (c) other one is similar
+
+    L16.29 φn, ψn preserve application:
+        (a) ψ(n-1)(a(b)) ≥ ψn(a)(ψ(n-1)(b))
+        (b) φn(a(b)) = φ(n+1)(a)(φn(b))
+
+    E16.30 n ≥ 2 => kn = λλa \in D(n-1) . λλb \in D(n-2) . ψ(n-2)(a)
+    (a) kn \in Dn
+        ye obv.
+    
+    N16.31 n ≥ 3 => sn = λλa \in D(n-1) . λλb \in D(n-2) . λλc \in D(n-3) . a(φ(n-3)(c))(b(c))
+
+    D16.32 forall m, n ≥ 0,
+              φ(n-1) . φ(n-2) . ... . φ(m+1) . φ(m) if m < n
+        φmn = I_Dm                                  if m = n
+              ψ(n) . ψ(n+1) . ... . ψ(m-2) . ψ(m-1) if m > n.
+
+    L16.33 (a) φmn \in [Dm->Dn]
+           (b) m ≤ n => φnm . φmn = I_Dm
+           (c) m > n => φnm . φmn ≤ I_Dm
+           (d) φkn . φmk = φmn if m ≤ k ≤ n
+
+    D16.34 (Construction of D∞) D∞ is the set of all infinite sequences
+        d = <d0, d1, d2, ...>
+    s.t. forall n ≥ 0, dn \in Dn and ψn(d(n+1)) = dn
+    also, d ≤ d' <=> (forall n ≥ 0)(dn ≤ dn')
+    
+D. Basic Properties of D∞
+    L16.36 D∞ is a CPO. Its least member is
+        ⊥ = <⊥0, ⊥1, ⊥2, ...>
+    forall directed X \subseteq D∞,
+        UX = <UX0, UX1, ...>
+    
+    D16.37 (Embedding Dn into D∞)
+        (forall d \in D∞) φ∞n(d) = dn
+        (forall d \in Dn) φn∞(a) = <φn0(a), φn1(a), φn2(a), ...>
+
+    L16.38 <φn∞,φ∞n> is a projection from D∞ to Dn.
+
+    L16.39 Forall a \in D∞, n, r ≥ 0,
+        (a) φ(n+r)n (a(n+r)) = an
+        (b) φn∞(an) ≤ φ(n+1)∞ (a(n+1))
+        (c) a = Uφn∞(an) = U_{n ≥ r}φn∞(an)
+    
+    R16.40 φn∞ embeds Dn isomorphically into D∞.
+    So can think of d \in Dn as being same as φn∞(d) \in D∞.
+    So then a0 ≤ a1 ≤ a2 ≤ ...
+    and a = U{a0,a1,a2...}
+    
+    D16.41 (Application in D∞) For a, b \in D∞,
+        {φn∞(a(n+1)(bn)) : n ≥ 0} is an increasing seq and therefore has an LUB.
+    Define a • b = U_{n ≥ 0}φn∞(a(n+1)(bn)).
+
+    L16.42 Forall a, b \in D∞,
+        φn∞(a(n+1)(bn)) ≤ φ(n+1)∞(a(n+2)(b(n+1)))
+    C16.42.1 Forall a, b \in D∞, r ≥ 0
+        (a) a • b = U_{n ≥ r}φn∞(a(n+1)(bn))
+        (b) (a • b)r = U_{n ≥ r}(a(n+1)(bn))
+        (c) (a • b)r ≥ a(r+1)(br)
+
+    D16.43 (Interpreting Combinations of Variables) Let ρ be a mapping from Vars to D∞.
+        (a) [x]_ρ = ρ(x)
+        (b) [PQ]_ρ = [P]_ρ • [Q]_ρ.
+
+    D16.44 Let n ≥ 0; then every mapping ρ generates that interpretation, and also
+        (a) [x]^n_ρ = (ρ(x))n
+        (b) [PQ]^n_ρ = [P]^(n+1)_ρ([Q]^n_ρ)
+
+    R16.46 [M]^n_ρ is like an approximation to [M]_ρ.
+    
+    L16.47 Forall combinations M of variables, ρ: Vars -> D∞, n, r ≥ 0,
+        (a) ψn([M]^(n+1)_ρ) ≥ [M]^n_ρ
+        (b) φ(n+r)n([M]^(n+r)_ρ) ≥ [M]^n_ρ
+        (c) φ(n+r)∞([M]^(n+r)_ρ) ≥ φn∞([M]^n_ρ)
+
+    L16.48 M, ρ, n, r
+        (a) [M]_ρ = U_{n ≥ r}φn∞([M]^n_ρ)
+        (b) ([M]_ρ)r = U_{n ≥ r}φnr([M]^n_ρ)
+
+E. D∞ is a λ-model
+    D16.50 k = <⊥0, I_D0, k2, k3, k4, ...>
+
+    L16.51 k \in D∞ and forall a, b \in D∞
+        k • a • b = a
+
+    D16.52 s = <⊥0, I_D0, ψ2(s3), s3, s4, ...>
+
+    L16.53 s \in D∞ and forall a, b, c \in D∞
+        s • a • b • c = a • c • (b • c)
+
+    T16.54 <D∞,•> is extensional.
+    P. Must prove a(r+1) = b(r+1) forall r ≥ 0.
+       Let d \in Dr, c = φr∞(d)
+       (a • c)r = U_{n ≥ r} φnr(a(n+1)(φrn(d)))
+                = U_{n ≥ r} (ψr . ... . ψ(n-2) . ψ(n-1) . a(n+1) . φ(n-1) . φ(n-2) . ... . φr)(d)
+                = U_{n ≥ r} a(r+1)(d)
+                = a(r+1)(d)
+       (b • c)r = b(r+1)(d), so a = b. QED.
+
+    T16.55 D∞ is an extensional λ-model.
+
+    L16.56 Application in D∞ is continuous in both variables:
+        (a) a • (UX) = U{a • b : b \in X}
+        (b) (UX) • b = U{a • b : a \in X}
+
+    T16.57 (a) A function from D∞ to D∞ is continous <=> it is representable in D∞.
+           (b) [D∞->D∞] is a CPO and isomorphic to D∞.
+
+    T16.58 For every CPO D, every φ \in [D->D] has a fixpoint, and its least fixpoint is
+        pφ = U_{n ≥ 0}φ^n(⊥)
+
+    T16.59 For D∞, the operation of finding the fixpoint is representable; in fact, if Y is a fixpoint combinator,
+        forall φ \in [D∞->D∞], f \in D∞ representing φ,
+        [Y] • f = pφ.
+
+    R16.60 D |= M = N can be characterised in terms of syntax using "Boehm trees".
+
+    T16.61 For λ-terms M, N, D∞ |= M = N iff their Boehm trees have the same infinite η-normal form.
+
+    R16.62 Slightly different from Scott's OG; that used complete lattices not CPOs (every subset has LUB). but CPOs became important later.
+    Only difference is D0. Could be any CPO or complete lattice, N+ not necessary. But it's independent anyway.
+
+F. Some Other Models
+    D16.63 Two λ-models _D1, _D2 are equationally equivalent iff they satisfy the same set of equations M = N.
+
+    D16.64 The Model DA (Engeler)
+    For any nonempty set A, G(A) is the smallest set such that
+        (i) A \subseteq G(A)
+        (ii) α \subseteq G(A) is finite & m \in G(A)
+             => (α -> m) \in G(A) [-> is any ordered pair construction]
+
+    DA = P(G(A)). For all a, b \in DA
+        a • b = { m \in G(A) : (3 finite β \subseteq b) (β -> m) \in a}
+        Λ(a) = {(β -> m) : β finite \subseteq G(A) & m \in a • β}
+
+    <DA,•,Λ> is a λ-model.
+        k = {(α->(β->m)) : α,β finite \subseteq G(A) & m \in α}
+        s = {(σ ->(β->(γ->m))) : α,β,γ finite \subseteq G(A) & m \in α • γ • (β • γ)}
+        e = {(α->(β->m)) : α,β finite \subseteq G(A) & m \in α • β}
+
+    Shortest known model-construction (apart from TMs).
+    Properties:
+        (a) Not extensional
+        (b) Equationally equivalent to the Boehm tree model
+        (c) Other Λs are possible, but equations satisfied are diff.
+        (d) Every AS <B,•> can be isomorphically embedded into <DB,•>.
+
+    D16.65 The Model Pω (Plotkin, Scott)
+    Pω = P(N). Let [i,j] be the number corresponding to (i,j) in some bijection and α0, α1,... be an enumeration of all finite sets of nats.
+    [i,m] = (αi -> m)
+    Define
+        a • b = {m \in N : (3αi \subseteq b)((αi -> m) \in a)}
+        Λ(a) = {(αi -> m) : m \in a • αi}
+
+    <Pω,•,Λ> is a model.
+    Properties:
+        (a) Not extensional.
+        (b) Equationally equivalent to the Boehm tree model
+        (c) Pω is a complete lattice, and [Pω->Pω] = (Pω->Pω)_rep.
+        (d) Each of the CAs <Pω,•> and <DA,•> can be isomorphically embedded into the other, but not isomorphic.
+    
+    NB: Pω is actually a set of models, depending on the bijection and enumeration.
+
+    16.66 Filter Models (Coppo, Dezani et al.)
+    Intersection types -> filter models (untyped λ)
+    D∞ can be viewed as a filter model too.
+
+    16.67 Some other Models
+    Term Models: For each formal theory whose axioms, rules include λβ's, the corresponding TM is a λ-model.
+    Barendegt's Boehm-tree Model B: Trees of syntactical expressions as members (not all finite). One property is
+        B |= M = N <=> M and N have the same Boehm-tree.
+    Plotkin's Model T^ω: Properties similar to Pω, but not a lattice. Equationally equivalent to the Boehm tree model (and Pω, DA).
+    Sanchis' Hypergraph Structure: Development of Pω; is a CA but not a λ-model.
+    J. Zashev's: Described two general procedures to generate CAs. Some are λ-models, one closely related to Pω.
+
+    R16.68 (Other Approaches to Model-Building) Main problem is creating structure <D,•>.
+    Some other approaches to semantics are
+        (1) Change set-theory (not ZF). In a non-well-founded set theory, can build sets with genuine functions where • is real application.
+        (2) a • b need not be defined for all a, b - partial models, e.g.
+                (a) uniformly reflexive structures, URSs
+                        models of axiomatised abstract theory of PRFs.
+                        Simplest is N with a•b = {a}(b), where {a} is the PRF w Goedel no. a.
+                (b) models of typed λ-calculi
+                        a•b being defined depends on types of a, b. otherwise like models of untyped λ.
+        (3) Models of theories of reduction, not equality, e.g. Fool's Model for CLw.
+        (4) Lambda abstraction algebras, related to λ-calculus like boolean algebras related to propositional logic, and like cylindric/polyadic algebras to predicate logic.
